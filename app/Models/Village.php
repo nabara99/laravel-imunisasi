@@ -28,4 +28,9 @@ class Village extends Model
     {
         return $this->hasMany(IdlTarget::class);
     }
+
+    public function wus()
+    {
+        return $this->hasMany(Wus::class);
+    }
 }

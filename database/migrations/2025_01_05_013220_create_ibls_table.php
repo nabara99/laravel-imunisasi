@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('student_targets', function (Blueprint $table) {
+        Schema::create('ibls', function (Blueprint $table) {
             $table->id();
-            $table->string('classroom');
-            $table->integer('sum_boys');
-            $table->integer('sum_girls');
-            $table->foreignId('id_school')->constrained('schools')->onDelete('cascade');
+            $table->foreignId('id_children')->constrained('childrens')->onDelete('cascade');
+            $table->date('pcv3')->nullable();
+            $table->date('penta4')->nullable();
+            $table->date('mr2')->nullable();
+            $table->boolean('lengkap')->default(false);
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('student_targets');
+        Schema::dropIfExists('ibls');
     }
 };

@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\School;
 use App\Models\Village;
 use Illuminate\Http\Request;
 
-class VillageController extends Controller
+class SchoolController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $villages = Village::get();
-        return view('pages.village.index', compact('villages'));
+        $schools = School::get();
+
+        return view('pages.school.index', compact('schools'));
     }
 
     /**
@@ -21,7 +23,7 @@ class VillageController extends Controller
      */
     public function create()
     {
-        return view('pages.village.create');
+        return view('pages.school.create');
     }
 
     /**
@@ -30,18 +32,20 @@ class VillageController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required'
+            'name' => 'required|unique:schools,name'
+        ],[
+            'name.unique' => 'Nama sudah ada'
         ]);
 
-        Village::create($validated);
+        School::create($validated);
 
-        return redirect()->route('village.index')->with('success', 'Data Desa berhasil disimpan');
+        return redirect()->route('school.index')->with('success', 'Data berhasil disimpan');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Village $village)
+    public function show(School $school)
     {
         //
     }
@@ -51,29 +55,29 @@ class VillageController extends Controller
      */
     public function edit($id)
     {
-        $village = Village::findOrFail($id);
+        $school = School::findOrFail($id);
 
-        return view('pages.village.edit', compact('village'));
+        return view('pages.school.edit', compact('school'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Village $village)
+    public function update(Request $request, School $school)
     {
         $validated = $request->validate([
             'name' => 'required'
         ]);
 
-        $village->update($validated);
+        $school->update($validated);
 
-        return redirect()->route('village.index')->with('success', 'Data desa berhasil diubah');
+        return redirect()->route('school.index')->with('success', 'Data berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Village $village)
+    public function destroy(School $school)
     {
         //
     }

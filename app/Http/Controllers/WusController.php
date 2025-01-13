@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Children;
+use App\Models\Wus;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ChildrenController extends Controller
+class WusController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $childrens = DB::table('childrens')
-            ->join('villages', 'childrens.id_village', '=', 'villages.id')
-            ->select('childrens.*', 'villages.name')
-            ->get();
+        $wuses = DB::table('wuses')
+        ->join('villages', 'wuses.id_village', '=', 'villages.id')
+        ->select('wuses.*', 'villages.name')
+        ->get();
 
-        return view('pages.children.index', compact('childrens'));
+        return view('pages.wus.index', compact('wuses'));
     }
 
     /**
@@ -29,7 +29,7 @@ class ChildrenController extends Controller
     {
         $villages = Village::all();
 
-        return view('pages.children.create', compact('villages'));
+        return view('pages.wus.create', compact('villages'));
     }
 
     /**
@@ -38,25 +38,25 @@ class ChildrenController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name_child' => 'required',
-            'nik' => 'required|max:16|min:16|unique:childrens,nik',
+            'name_wus' => 'required',
+            'nik' => 'required|max:16|min:16|unique:wuses,nik',
             'date_birth' => 'required',
-            'mother_name' => 'required',
-            'mother_nik' => 'required',
             'address' => 'required',
-            'gender' => 'required',
             'id_village' => 'required',
+            'hamil' => 'required',
+        ], [
+            'nik.unique' => 'Nik sudah terpakai'
         ]);
 
-        Children::create($validated);
+        Wus::create($validated);
 
-        return redirect()->route('children.index')->with('success', 'Data anak berhasil disimpan');
+        return redirect()->route('wus.index')->with('success', 'Data berhasil disimpan');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Children $children)
+    public function show(Wus $wus)
     {
         //
     }
@@ -66,10 +66,10 @@ class ChildrenController extends Controller
      */
     public function edit($id)
     {
-        $children = Children::findOrFail($id);
+        $wus = Wus::findOrFail($id);
         $villages = Village::all();
 
-        return view('pages.children.edit', compact('children', 'villages'));
+        return view('pages.wus.edit', compact('wus', 'villages'));
     }
 
     /**
@@ -77,28 +77,26 @@ class ChildrenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $children = Children::findOrFail($id);
+        $wus = Wus::findOrFail($id);
 
         $validated = $request->validate([
-            'name_child' => 'required',
+            'name_wus' => 'required',
             'nik' => 'required|max:16|min:16',
             'date_birth' => 'required',
-            'mother_name' => 'required',
-            'mother_nik' => 'required',
             'address' => 'required',
-            'gender' => 'required',
             'id_village' => 'required',
+            'hamil' => 'required',
         ]);
 
-        $children->update($validated);
+        $wus->update($validated);
 
-        return redirect()->route('children.index')->with('success', 'Data anak berhasil diubah');
+        return redirect()->route('wus.index')->with('success', 'Data berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Children $children)
+    public function destroy(Wus $wus)
     {
         //
     }

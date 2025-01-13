@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\MotherTarget;
-use App\Http\Requests\StoreMotherTargetRequest;
-use App\Http\Requests\UpdateMotherTargetRequest;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

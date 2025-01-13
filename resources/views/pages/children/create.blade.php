@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('style')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
 @section('main')
     <div class="main-content">
         <div class="page-content">
@@ -71,9 +75,9 @@
                                     <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Tgl Lahir</label>
-                                            <input type="date" value="{{ old('date_birth') }}"
+                                            <input type="text" id="datePicker" value="{{ old('date_birth') }}"
                                                 class="form-control @error('date_birth') is-invalid @enderror"
-                                                name="date_birth" required>
+                                                name="date_birth" placeholder="Pilih Tanggal">
                                             @error('date_birth')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -116,7 +120,7 @@
                                             <div>
                                                 <div class="form-check form-check-inline">
                                                     <input type="radio" class="form-check-input" name="gender"
-                                                        id="gender1" value="L">
+                                                        id="gender1" value="L" checked>
                                                     <label class="form-check-label" for="gender1">
                                                         Laki-Laki
                                                     </label>
@@ -134,8 +138,7 @@
                                     <div class="col-sm-8">
                                         <div class="mb-3">
                                             <label for="">Alamat</label>
-                                            <textarea class="form-control @error('address') is-invalid @enderror"
-                                            name="address" rows="2"></textarea>
+                                            <textarea class="form-control @error('address') is-invalid @enderror" name="address" rows="2" required></textarea>
                                             @error('address')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -154,3 +157,13 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr("#datePicker", {
+            dateFormat: "Y-m-d",
+        });
+    </script>
+@endpush

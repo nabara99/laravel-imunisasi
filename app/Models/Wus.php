@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Children extends Model
+class Wus extends Model
 {
-    /** @use HasFactory<\Database\Factories\ChildrenFactory> */
+    /** @use HasFactory<\Database\Factories\WusFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'name_child',
+        'name_wus',
         'nik',
         'date_birth',
-        'mother_name',
-        'mother_nik',
         'address',
-        'gender',
         'id_village',
+        'hamil'
     ];
 
     public function village()
@@ -26,12 +24,8 @@ class Children extends Model
         return $this->belongsTo(Village::class);
     }
 
-    public function Idl()
+    public function wusImun()
     {
-        return $this->belongsTo(Idl::class);
-    }
-    public function Ibl()
-    {
-        return $this->belongsTo(Ibl::class);
+        return $this->belongsTo(WusImun::class);
     }
 }

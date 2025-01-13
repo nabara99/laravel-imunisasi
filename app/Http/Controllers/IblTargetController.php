@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\IblTarget;
-use App\Http\Requests\UpdateIblTargetRequest;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
