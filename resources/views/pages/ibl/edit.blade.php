@@ -26,7 +26,7 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label for="">Bayi</label>
                                             <select name="id_children_disabled" class="form-select mb-3" disabled>
@@ -40,7 +40,7 @@
                                             <input type="hidden" name="id_children" value="{{ $ibl->id_children }}">
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">PCV3</label>
                                             <input type="text" id="datePicker" value="{{ $ibl->pcv3 }}"
@@ -53,7 +53,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Penta4</label>
                                             <input type="text" id="datePicker" value="{{ $ibl->penta4 }}"
@@ -66,7 +66,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">MR2</label>
                                             <input type="text" id="datePicker" value="{{ $ibl->mr2 }}"
@@ -79,8 +81,6 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Status</label>

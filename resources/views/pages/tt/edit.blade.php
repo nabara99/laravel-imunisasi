@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T1</label>
                                             <input type="text" id="datePicker" value="{{ $tt->t1 }}"
@@ -55,7 +55,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T2</label>
                                             <input type="text" id="datePicker" value="{{ $tt->t2 }}"
@@ -68,7 +68,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T3</label>
                                             <input type="text" id="datePicker" value="{{ $tt->t3 }}"
@@ -81,35 +81,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">T4</label>
-                                            <input type="text" id="datePicker" value="{{ $tt->t4 }}"
-                                                class="form-control @error('t4') is-invalid @enderror" name="t4"
-                                                placeholder="Pilih Tanggal">
-                                            @error('t4')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <div class="mb-3">
-                                            <label for="" class="form-label">T5</label>
-                                            <input type="text" id="datePicker" value="{{ $tt->t5 }}"
-                                                class="form-control @error('t5') is-invalid @enderror" name="t5"
-                                                placeholder="Pilih Tanggal">
-                                            @error('t5')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T1 Status</label>
                                             <div>
@@ -130,7 +104,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T2 Status</label>
                                             <div>
@@ -151,7 +125,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T3 Status</label>
                                             <div>
@@ -172,7 +146,37 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="mb-3">
+                                            <label for="" class="form-label">T4</label>
+                                            <input type="text" id="datePicker" value="{{ $tt->t4 }}"
+                                                class="form-control @error('t4') is-invalid @enderror" name="t4"
+                                                placeholder="Pilih Tanggal">
+                                            @error('t4')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="mb-3">
+                                            <label for="" class="form-label">T5</label>
+                                            <input type="text" id="datePicker" value="{{ $tt->t5 }}"
+                                                class="form-control @error('t5') is-invalid @enderror" name="t5"
+                                                placeholder="Pilih Tanggal">
+                                            @error('t5')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T4 Status</label>
                                             <div>
@@ -193,7 +197,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">T5 Status</label>
                                             <div>

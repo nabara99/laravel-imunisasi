@@ -26,7 +26,7 @@
                             <form class="forms-sample" action="{{ route('idl-imun.store') }}" method="POST">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="mb-2" for="">Bayi</label>
                                             <select class="childs form-select @error('id_children') is-invalid @enderror"
@@ -46,7 +46,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">HB0</label>
                                             <input type="text" id="datePicker" value="{{ old('hb0') }}"
@@ -59,7 +59,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">BCG</label>
                                             <input type="text" id="datePicker" value="{{ old('bcg') }}"
@@ -72,7 +72,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Polio1</label>
                                             <input type="text" id="datePicker" value="{{ old('polio1') }}"
@@ -85,7 +87,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Penta1</label>
                                             <input type="text" id="datePicker" value="{{ old('penta1') }}"
@@ -98,9 +100,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Polio2</label>
                                             <input type="text" id="datePicker" value="{{ old('polio2') }}"
@@ -113,7 +113,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">PCV1</label>
                                             <input type="text" id="datePicker" value="{{ old('pcv1') }}"
@@ -126,7 +126,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Rotavirus1</label>
                                             <input type="text" id="datePicker" value="{{ old('rotavirus1') }}"
@@ -139,7 +141,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Penta2</label>
                                             <input type="text" id="datePicker" value="{{ old('penta2') }}"
@@ -152,7 +154,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Polio3</label>
                                             <input type="text" id="datePicker" value="{{ old('polio3') }}"
@@ -165,7 +167,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">PCV2</label>
                                             <input type="text" id="datePicker" value="{{ old('pcv2') }}"
@@ -180,7 +182,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Rotavirus2</label>
                                             <input type="text" id="datePicker" value="{{ old('rotavirus2') }}"
@@ -193,7 +195,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Penta3</label>
                                             <input type="text" id="datePicker" value="{{ old('penta3') }}"
@@ -206,7 +208,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Polio4</label>
                                             <input type="text" id="datePicker" value="{{ old('polio4') }}"
@@ -219,7 +221,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">IPV1</label>
                                             <input type="text" id="datePicker" value="{{ old('ipv1') }}"
@@ -232,7 +234,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Rotavirus3</label>
                                             <input type="text" id="datePicker" value="{{ old('rotavirus3') }}"
@@ -245,7 +249,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">MR1</label>
                                             <input type="text" id="datePicker" value="{{ old('mr1') }}"
@@ -258,9 +262,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">IPV2</label>
                                             <input type="text" id="datePicker" value="{{ old('ipv2') }}"
@@ -273,7 +275,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Status</label>
                                             <div>

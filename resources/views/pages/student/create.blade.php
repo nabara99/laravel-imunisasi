@@ -56,7 +56,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Nama</label>
                                             <input type="text" value="{{ old('name_student') }}"
@@ -69,7 +69,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Tgl Lahir</label>
                                             <input type="text" id="datePicker" value="2019-01-01"
@@ -82,7 +82,9 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">NIK Anak</label>
                                             <input type="text" value="{{ old('nik') }}"
@@ -96,9 +98,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <div class="mb-3">
                                             <label for="" class="form-label">Jenis Kelamin</label>
                                             <div>
