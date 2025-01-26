@@ -16,7 +16,8 @@ class IdlController extends Controller
     {
         $idls = DB::table('idls')
             ->join('childrens', 'idls.id_children', '=', 'childrens.id')
-            ->select('idls.*', 'childrens.name_child', 'childrens.nik', 'childrens.date_birth', 'childrens.gender', 'childrens.mother_name')
+            ->join('villages', 'childrens.id_village', '=', 'villages.id')
+            ->select('idls.*', 'childrens.name_child', 'childrens.nik', 'childrens.date_birth', 'childrens.gender', 'childrens.mother_name', 'villages.name')
             ->get();
 
         return view('pages.idl.index', compact('idls'));
@@ -119,11 +120,10 @@ class IdlController extends Controller
             'rotavirus3' => $request->rotavirus3,
             'mr1' => $request->mr1,
             'ipv2' => $request->ipv2,
-            'lengkap'=> $request->lengkap
+            'lengkap' => $request->lengkap
         ]);
 
         return redirect()->route('idl-imun.index')->with('success', 'Data berhasil diupdate');
-
     }
 
     /**

@@ -35,6 +35,7 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
+                                            <th>Desa</th>
                                             <th>Nama Bayi</th>
                                             <th>NIK</th>
                                             <th>Tgl Lahir</th>
@@ -49,6 +50,7 @@
                                         @foreach ($ibls as $index => $ibl)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td style="white-space: normal">{{ $ibl->name }}</td>
                                                 <td style="white-space: normal">{{ $ibl->name_child }}</td>
                                                 <td style="white-space: normal">{{ $ibl->nik }}</td>
                                                 <td style="white-space: normal">{{ date('j F Y', strtotime($ibl->date_birth)) }}</td>

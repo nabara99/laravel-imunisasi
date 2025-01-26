@@ -16,7 +16,8 @@ class IblController extends Controller
     {
         $ibls = DB::table('ibls')
             ->join('childrens', 'ibls.id_children', '=', 'childrens.id')
-            ->select('ibls.*', 'childrens.name_child', 'childrens.nik', 'childrens.date_birth', 'childrens.gender', 'childrens.mother_name')
+            ->join('villages', 'childrens.id_village', '=', 'villages.id')
+            ->select('ibls.*', 'childrens.name_child', 'childrens.nik', 'childrens.date_birth', 'childrens.gender', 'childrens.mother_name', 'villages.name')
             ->get();
 
         return view('pages.ibl.index', compact('ibls'));

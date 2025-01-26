@@ -35,6 +35,7 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
+                                            <th>Desa</th>
                                             <th>Nama</th>
                                             <th>NIK</th>
                                             <th>Tgl Lahir</th>
@@ -47,6 +48,7 @@
                                         @foreach ($wuses as $index => $wus)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td style="white-space: normal">{{ $wus->name }}</td>
                                                 <td style="white-space: normal">{{ $wus->name_wus }}</td>
                                                 <td style="white-space: normal">{{ $wus->nik }}</td>
                                                 <td style="white-space: normal">{{ date('j F Y', strtotime($wus->date_birth)) }}</td>
