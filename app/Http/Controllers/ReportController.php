@@ -40,6 +40,7 @@ class ReportController extends Controller
                 DB::raw("SUM(CASE WHEN idls.hb0 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_hb0")
             )
             ->groupBy('villages.name', 'idl_targets.sum_boys', 'idl_targets.sum_girls')
+            ->orderBy('villages.id')
             ->get();
 
         return view('pages.report.reportIdl', [
