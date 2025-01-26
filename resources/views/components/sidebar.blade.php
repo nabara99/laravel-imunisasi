@@ -99,6 +99,13 @@
                     <span class="link-title">BIAS</span>
                 </a>
             </li>
+            <li class="nav-item nav-category">Laporan</li>
+            <li class="nav-item {{str_contains(Route::currentRouteName(), 'report') ? 'active' : ''}}">
+                <a class="nav-link" href="{{route('report.index')}}">
+                    <i class="link-icon" data-feather="printer"></i>
+                    <span class="link-title">Rekapitulasi</span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

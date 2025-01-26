@@ -7,6 +7,7 @@ use App\Http\Controllers\IblTargetController;
 use App\Http\Controllers\IdlController;
 use App\Http\Controllers\IdlTargetController;
 use App\Http\Controllers\MotherTargetController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentImunController;
@@ -35,4 +36,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tt-imun', WusImunController::class);
     Route::resource('child-sch', StudentController::class);
     Route::resource('bias', StudentImunController::class);
+    Route::resource('report', ReportController::class);
+    Route::post('report-idl', [ReportController::class, 'reportIDL'])->name('report-idl');
 });
