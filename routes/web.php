@@ -38,4 +38,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('bias', StudentImunController::class);
     Route::resource('report', ReportController::class);
     Route::post('report-idl', [ReportController::class, 'reportIDL'])->name('report-idl');
+    Route::post('report-ibl', [ReportController::class, 'reportIBL'])->name('report-ibl');
 });

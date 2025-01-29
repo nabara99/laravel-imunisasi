@@ -44,7 +44,7 @@
                     <div class="card bg-info">
                         <div class="card-header">Cakupan IBL</div>
                         <div class="card-body">
-                            <form action="" method="POST" target="blank">
+                            <form action="{{ route('report-ibl') }}" method="POST" target="blank">
                                 @csrf
                                 <h5 class="card-title">
                                     Pilih tanggal

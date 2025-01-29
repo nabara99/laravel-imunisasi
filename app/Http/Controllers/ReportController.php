@@ -94,4 +94,47 @@ class ReportController extends Controller
             'endDate' => $endDate,
         ]);
     }
+
+    public function reportIBL(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Validasi input tanggal
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $reportIBL = DB::table('ibls')
+            ->join('childrens', 'ibls.id_children', '=', 'childrens.id')
+            ->join('villages', 'childrens.id_village', '=', 'villages.id')
+            ->join('ibl_targets', 'villages.id', '=', 'ibl_targets.village_id')
+            ->select(
+                'villages.name as village_name',
+                'ibl_targets.sum_boys',
+                'ibl_targets.sum_girls',
+                DB::raw('COUNT(DISTINCT childrens.id) AS total_children'),
+                DB::raw("SUM(CASE WHEN ibls.pcv3 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_pcv3"),
+                DB::raw("SUM(CASE WHEN ibls.pcv3 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'L' THEN 1 ELSE 0 END) AS boys_pcv3"),
+                DB::raw("SUM(CASE WHEN ibls.pcv3 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_pcv3"),
+                DB::raw("SUM(CASE WHEN ibls.penta4 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_penta4"),
+                DB::raw("SUM(CASE WHEN ibls.penta4 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'L' THEN 1 ELSE 0 END) AS boys_penta4"),
+                DB::raw("SUM(CASE WHEN ibls.penta4 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_penta4"),
+                DB::raw("SUM(CASE WHEN ibls.mr2 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_mr2"),
+                DB::raw("SUM(CASE WHEN ibls.mr2 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'L' THEN 1 ELSE 0 END) AS boys_mr2"),
+                DB::raw("SUM(CASE WHEN ibls.mr2 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_mr2"),
+            )
+            ->groupBy('villages.name', 'ibl_targets.sum_boys', 'ibl_targets.sum_girls')
+            ->orderBy('villages.id')
+            ->get();
+
+        return view('pages.report.reportIbl', [
+            'reportIbl' => $reportIBL,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
+
+
 }
