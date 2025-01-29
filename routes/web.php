@@ -39,4 +39,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('report', ReportController::class);
     Route::post('report-idl', [ReportController::class, 'reportIDL'])->name('report-idl');
     Route::post('report-ibl', [ReportController::class, 'reportIBL'])->name('report-ibl');
+    Route::post('report-tt', [ReportController::class, 'reportTT'])->name('report-tt');
 });

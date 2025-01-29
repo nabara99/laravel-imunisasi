@@ -136,5 +136,47 @@ class ReportController extends Controller
         ]);
     }
 
+    public function reportTT(Request $request)
+    {
+        // Validasi input lebih awal
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
 
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $reportTT = DB::table('wus_imuns')
+            ->join('wuses', 'wus_imuns.id_wus', '=', 'wuses.id')
+            ->join('villages', 'wuses.id_village', '=', 'villages.id')
+            ->join('mother_targets', 'villages.id', '=', 'mother_targets.village_id')
+            ->select(
+                'villages.name as village_name',
+                'mother_targets.no_pregnant',
+                'mother_targets.pregnant',
+            )
+            ->addSelect([
+                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t1_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t1_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t2_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t2_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t3_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t3_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t4_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t4_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t5_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t5_no_pregnant")
+            ])
+            ->groupBy('villages.name', 'mother_targets.no_pregnant', 'mother_targets.pregnant')
+            ->orderBy('villages.id')
+            ->setBindings(array_fill(0, 10, [$startDate, $endDate]))
+            ->get();
+
+        return view('pages.report.reportTT', [
+            'reportTT' => $reportTT,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
 }

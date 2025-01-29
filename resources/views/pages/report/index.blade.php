@@ -102,9 +102,9 @@
                 </div>
                 <div class="col-12 col-md-6 grid-margin">
                     <div class="card text-white bg-secondary">
-                        <div class="card-header">Cakupan WUS</div>
+                        <div class="card-header">Cakupan WUS & Bumil</div>
                         <div class="card-body">
-                            <form action="" method="POST" target="blank">
+                            <form action="{{ route('report-tt') }}" method="POST" target="blank">
                                 @csrf
                                 <h5 class="card-title text-white">
                                     Pilih tanggal
