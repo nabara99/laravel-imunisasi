@@ -40,7 +40,6 @@
                                             <th>NIK</th>
                                             <th>Tgl Lahir</th>
                                             <th>Riwayat</th>
-                                            <th>Hamil</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -53,19 +52,19 @@
                                                 <td style="white-space: normal">{{ $wus->nik }}</td>
                                                 <td style="white-space: normal">{{ date('j F Y', strtotime($wus->date_birth)) }}</td>
                                                 <td style="white-space: normal">
-                                                    {{ $wus->t1 ? 't1,' : '' }}
-                                                    {{ $wus->t2 ? 't2,' : '' }}
-                                                    {{ $wus->t3 ? 't3,' : '' }}
-                                                    {{ $wus->t4 ? 't4,' : '' }}
-                                                    {{ $wus->t5 ? 't5,' : '' }}
+                                                    {{ $wus->t1 ? 't1' : '' }}{{ $wus->t1_status == 1 ? '[hamil],' : '' }}
+                                                    {{ $wus->t2 ? 't2' : '' }}{{ $wus->t2_status == 1 ? '[hamil],' : '' }}
+                                                    {{ $wus->t3 ? 't3' : '' }}{{ $wus->t3_status == 1 ? '[hamil],' : '' }}
+                                                    {{ $wus->t4 ? 't4' : '' }}{{ $wus->t4_status == 1 ? '[hamil],' : '' }}
+                                                    {{ $wus->t5 ? 't5' : '' }}{{ $wus->t5_status == 1 ? '[hamil],' : '' }}
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     @if ($wus->hamil == '0')
                                                         <button type="button" class="btn btn-inverse-warning btn-xs">Tidak</button>
                                                     @else
                                                         <button type="button" class="btn btn-inverse-danger btn-xs">Ya</button>
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                                 <td>
                                                     <a href="{{ route('tt-imun.edit', $wus->id) }}" title="Edit">
                                                         <i class="fa-solid fa-pencil"></i>
