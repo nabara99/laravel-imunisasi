@@ -157,16 +157,16 @@ class ReportController extends Controller
                 'mother_targets.pregnant',
             )
             ->addSelect([
-                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t1_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t1_no_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t2_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t2_no_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t3_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t3_no_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t4_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t4_no_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wuses.hamil = '1' THEN 1 END) AS t5_pregnant"),
-                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wuses.hamil = '0' THEN 1 END) AS t5_no_pregnant")
+                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wus_imuns.t1_status = '1' THEN 1 END) AS t1_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t1 BETWEEN ? AND ? AND wus_imuns.t1_status = '0' THEN 1 END) AS t1_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wus_imuns.t2_status = '1' THEN 1 END) AS t2_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t2 BETWEEN ? AND ? AND wus_imuns.t2_status = '0' THEN 1 END) AS t2_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wus_imuns.t3_status = '1' THEN 1 END) AS t3_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t3 BETWEEN ? AND ? AND wus_imuns.t3_status = '0' THEN 1 END) AS t3_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wus_imuns.t4_status = '1' THEN 1 END) AS t4_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t4 BETWEEN ? AND ? AND wus_imuns.t4_status = '0' THEN 1 END) AS t4_no_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wus_imuns.t5_status = '1' THEN 1 END) AS t5_pregnant"),
+                DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wus_imuns.t5_status = '0' THEN 1 END) AS t5_no_pregnant")
             ])
             ->groupBy('villages.name', 'mother_targets.no_pregnant', 'mother_targets.pregnant')
             ->orderBy('villages.id')
