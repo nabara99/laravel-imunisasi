@@ -577,6 +577,7 @@
                                 <th colspan="3">Bayi Baru Lahir</th>
                                 <th colspan="4">ROTAVIRUS 1</th>
                                 <th colspan="4">ROTAVIRUS 2</th>
+                                <th colspan="4">ROTAVIRUS 3</th>
                             </tr>
                             <tr>
                                 <th>L</th>
@@ -589,6 +590,11 @@
                                 <th>L</th>
                                 <th>P</th>
                                 <th>JLH</th>
+                                <th>%</th>
+                                <th>L</th>
+                                <th>P</th>
+                                <th>JLH</th>
+                                <th>%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -608,6 +614,11 @@
                                     <td>{{ $report->total_rotavirus2 }}</td>
                                     <td>{{ number_format(($report->total_rotavirus2 / ($report->sum_girls + $report->sum_girls)) * 100, 2) }}
                                     </td>
+                                    <td>{{ $report->boys_rotavirus3 }}</td>
+                                    <td>{{ $report->girls_rotavirus3 }}</td>
+                                    <td>{{ $report->total_rotavirus3 }}</td>
+                                    <td>{{ number_format(($report->total_rotavirus3 / ($report->sum_girls + $report->sum_girls)) * 100, 2) }}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -626,6 +637,11 @@
                                 <td>{{ $reportIdl->sum('girls_rotavirus2') }}</td>
                                 <td>{{ $reportIdl->sum('total_rotavirus2') }}</td>
                                 <td>{{ number_format(($reportIdl->sum('total_rotavirus2') / ($reportIdl->sum('sum_girls') + $reportIdl->sum('sum_boys'))) * 100, 2) }}
+                                </td>
+                                <td>{{ $reportIdl->sum('boys_rotavirus3') }}</td>
+                                <td>{{ $reportIdl->sum('girls_rotavirus3') }}</td>
+                                <td>{{ $reportIdl->sum('total_rotavirus3') }}</td>
+                                <td>{{ number_format(($reportIdl->sum('total_rotavirus3') / ($reportIdl->sum('sum_girls') + $reportIdl->sum('sum_boys'))) * 100, 2) }}
                                 </td>
                             </tr>
                         </tfoot>
