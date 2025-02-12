@@ -28,10 +28,12 @@ class IdlController extends Controller
      */
     public function create()
     {
-        $childrens = DB::table('childrens')
-            ->select('*')
-            ->whereRaw("TIMESTAMPDIFF(MONTH, date_birth, CURDATE()) < ?", 24)
-            ->get();
+        // $childrens = DB::table('childrens')
+        //     ->select('*')
+        //     ->whereRaw("TIMESTAMPDIFF(MONTH, date_birth, CURDATE()) < ?", 24)
+        //     ->get();
+
+        $childrens = Children::all();
 
         return view('pages.idl.create', compact('childrens'));
     }

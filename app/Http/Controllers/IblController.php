@@ -28,10 +28,11 @@ class IblController extends Controller
      */
     public function create()
     {
-        $childrens = DB::table('childrens')
-            ->select('*')
-            ->whereRaw("TIMESTAMPDIFF(MONTH, date_birth, CURDATE()) BETWEEN ? AND ?", [12, 72])
-            ->get();
+        // $childrens = DB::table('childrens')
+        //     ->select('*')
+        //     ->whereRaw("TIMESTAMPDIFF(MONTH, date_birth, CURDATE()) BETWEEN ? AND ?", [12, 72])
+        //     ->get();
+        $childrens = Children::all();
 
         return view('pages.ibl.create', compact('childrens'));
     }
