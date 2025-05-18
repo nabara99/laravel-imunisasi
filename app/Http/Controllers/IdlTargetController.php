@@ -19,7 +19,10 @@ class IdlTargetController extends Controller
         ->select('idl_targets.*', 'villages.name')
         ->get();
 
-        return view('pages.idl-target.index', compact('idlTargets'));
+        $sumBoys = DB::table('idl_targets')->sum('sum_boys');
+        $sumGirls = DB::table('idl_targets')->sum('sum_girls');
+
+        return view('pages.idl-target.index', compact('idlTargets', 'sumBoys', 'sumGirls'));
     }
 
     /**

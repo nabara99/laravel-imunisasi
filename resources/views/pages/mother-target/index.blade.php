@@ -52,6 +52,14 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td style="text-align: center" colspan="2">Jumlah</td>
+                                            <td> {{number_format($sumPregnant,0,",",".")}}</td>
+                                            <td> {{number_format($sumNoPregnant,0,",",".")}}</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

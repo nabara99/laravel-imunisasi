@@ -19,7 +19,10 @@ class StudentTargetController extends Controller
         ->select('student_targets.*', 'schools.name')
         ->get();
 
-        return view('pages.student-target.index', compact('students'));
+        $sumBoys = DB::table('student_targets')->sum('sum_boys');
+        $sumGirls = DB::table('student_targets')->sum('sum_girls');
+
+        return view('pages.student-target.index', compact('students', 'sumBoys', 'sumGirls'));
     }
 
     /**

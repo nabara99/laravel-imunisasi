@@ -19,7 +19,10 @@ class MotherTargetController extends Controller
         ->select('mother_targets.*', 'villages.name')
         ->get();
 
-        return view('pages.mother-target.index', compact('motherTargets'));
+        $sumPregnant = DB::table('mother_targets')->sum('pregnant');
+        $sumNoPregnant = DB::table('mother_targets')->sum('no_pregnant');
+
+        return view('pages.mother-target.index', compact('motherTargets', 'sumPregnant', 'sumNoPregnant'));
     }
 
     /**

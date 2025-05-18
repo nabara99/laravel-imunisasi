@@ -52,6 +52,14 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td style="text-align: center" colspan="2">Jumlah</td>
+                                            <td>{{$sumBoys}}</td>
+                                            <td>{{$sumGirls}}</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

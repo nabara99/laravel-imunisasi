@@ -19,7 +19,10 @@ class IblTargetController extends Controller
         ->select('ibl_targets.*', 'villages.name')
         ->get();
 
-        return view('pages.ibl-target.index', compact('iblTargets'));
+        $sumBoys = DB::table('ibl_targets')->sum('sum_boys');
+        $sumGirls = DB::table('ibl_targets')->sum('sum_girls');
+
+        return view('pages.ibl-target.index', compact('iblTargets', 'sumBoys', 'sumGirls'));
     }
 
     /**
