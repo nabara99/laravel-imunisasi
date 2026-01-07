@@ -84,7 +84,7 @@ class ReportController extends Controller
                 DB::raw("SUM(CASE WHEN idls.rotavirus3 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'L' THEN 1 ELSE 0 END) AS boys_rotavirus3"),
                 DB::raw("SUM(CASE WHEN idls.rotavirus3 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_rotavirus3"),
             )
-            ->groupBy('villages.name', 'idl_targets.sum_boys', 'idl_targets.sum_girls')
+            ->groupBy('villages.id', 'villages.name', 'idl_targets.sum_boys', 'idl_targets.sum_girls')
             ->orderBy('villages.id')
             ->get();
 
@@ -125,7 +125,7 @@ class ReportController extends Controller
                 DB::raw("SUM(CASE WHEN ibls.mr2 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'L' THEN 1 ELSE 0 END) AS boys_mr2"),
                 DB::raw("SUM(CASE WHEN ibls.mr2 BETWEEN '{$startDate}' AND '{$endDate}' AND childrens.gender = 'P' THEN 1 ELSE 0 END) AS girls_mr2"),
             )
-            ->groupBy('villages.name', 'ibl_targets.sum_boys', 'ibl_targets.sum_girls')
+            ->groupBy('villages.id', 'villages.name', 'ibl_targets.sum_boys', 'ibl_targets.sum_girls')
             ->orderBy('villages.id')
             ->get();
 
@@ -168,13 +168,65 @@ class ReportController extends Controller
                 DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wus_imuns.t5_status = '1' THEN 1 END) AS t5_pregnant"),
                 DB::raw("COUNT(CASE WHEN wus_imuns.t5 BETWEEN ? AND ? AND wus_imuns.t5_status = '0' THEN 1 END) AS t5_no_pregnant")
             ])
-            ->groupBy('villages.name', 'mother_targets.no_pregnant', 'mother_targets.pregnant')
+            ->groupBy('villages.id', 'villages.name', 'mother_targets.no_pregnant', 'mother_targets.pregnant')
             ->orderBy('villages.id')
             ->setBindings(array_fill(0, 10, [$startDate, $endDate]))
             ->get();
 
         return view('pages.report.reportTT', [
             'reportTT' => $reportTT,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
+
+    public function reportBIAS(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Validasi input tanggal
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $reportBIAS = DB::table('student_imuns')
+            ->join('students', 'student_imuns.id_student', '=', 'students.id')
+            ->join('schools', 'students.id_school', '=', 'schools.id')
+            ->join('student_targets', 'schools.id', '=', 'student_targets.id_school')
+            ->select(
+                'schools.name as school_name',
+                'student_targets.classroom',
+                'student_targets.sum_boys',
+                'student_targets.sum_girls',
+                DB::raw('COUNT(DISTINCT students.id) AS total_students'),
+                DB::raw("SUM(CASE WHEN student_imuns.dt BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_dt"),
+                DB::raw("SUM(CASE WHEN student_imuns.dt BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'L' THEN 1 ELSE 0 END) AS boys_dt"),
+                DB::raw("SUM(CASE WHEN student_imuns.dt BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_dt"),
+                DB::raw("SUM(CASE WHEN student_imuns.mr BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_mr"),
+                DB::raw("SUM(CASE WHEN student_imuns.mr BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'L' THEN 1 ELSE 0 END) AS boys_mr"),
+                DB::raw("SUM(CASE WHEN student_imuns.mr BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_mr"),
+                DB::raw("SUM(CASE WHEN student_imuns.td1 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_td1"),
+                DB::raw("SUM(CASE WHEN student_imuns.td1 BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'L' THEN 1 ELSE 0 END) AS boys_td1"),
+                DB::raw("SUM(CASE WHEN student_imuns.td1 BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_td1"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pa BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_td2pa"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pa BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'L' THEN 1 ELSE 0 END) AS boys_td2pa"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pa BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_td2pa"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pi BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_td2pi"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pi BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'L' THEN 1 ELSE 0 END) AS boys_td2pi"),
+                DB::raw("SUM(CASE WHEN student_imuns.td2pi BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_td2pi"),
+                DB::raw("SUM(CASE WHEN student_imuns.hpv1 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_hpv1"),
+                DB::raw("SUM(CASE WHEN student_imuns.hpv1 BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_hpv1"),
+                DB::raw("SUM(CASE WHEN student_imuns.hpv2 BETWEEN '{$startDate}' AND '{$endDate}' THEN 1 ELSE 0 END) AS total_hpv2"),
+                DB::raw("SUM(CASE WHEN student_imuns.hpv2 BETWEEN '{$startDate}' AND '{$endDate}' AND students.gender = 'P' THEN 1 ELSE 0 END) AS girls_hpv2")
+            )
+            ->groupBy('schools.id', 'schools.name', 'student_targets.classroom', 'student_targets.sum_boys', 'student_targets.sum_girls')
+            ->orderBy('schools.id')
+            ->get();
+
+        return view('pages.report.reportBias', [
+            'reportBias' => $reportBIAS,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ]);

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ChildrenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IblController;
@@ -21,6 +23,14 @@ Route::get('/', function () {
     return view('pages.auth.login');
 })->middleware('guest');
 
+// Captcha route with web middleware to ensure session works
+Route::middleware(['web'])->group(function () {
+    Route::get('/simple-captcha', [CaptchaController::class, 'simpleCaptcha']);
+});
+
+// Override Fortify's login route to use our custom controller with captcha validation
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest')->name('login');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('village', VillageController::class);
@@ -40,4 +50,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('report-idl', [ReportController::class, 'reportIDL'])->name('report-idl');
     Route::post('report-ibl', [ReportController::class, 'reportIBL'])->name('report-ibl');
     Route::post('report-tt', [ReportController::class, 'reportTT'])->name('report-tt');
+    Route::post('report-bias', [ReportController::class, 'reportBIAS'])->name('report-bias');
 });

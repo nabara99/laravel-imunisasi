@@ -74,7 +74,7 @@
                     <div class="card text-white bg-dark">
                         <div class="card-header">Cakupan BIAS</div>
                         <div class="card-body">
-                            <form action="" method="POST" target="blank">
+                            <form action="{{ route('report-bias') }}" method="POST" target="blank">
                                 @csrf
                                 <h5 class="card-title text-white">
                                     Pilih tanggal
