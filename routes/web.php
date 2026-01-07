@@ -29,7 +29,7 @@ Route::middleware(['web'])->group(function () {
 });
 
 // Override Fortify's login route to use our custom controller with captcha validation
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest')->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('dashboard');
