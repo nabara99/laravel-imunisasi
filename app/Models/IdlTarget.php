@@ -14,6 +14,7 @@ class IdlTarget extends Model
         'sum_boys',
         'sum_girls',
         'village_id',
+        'year',
     ];
 
     public function village()

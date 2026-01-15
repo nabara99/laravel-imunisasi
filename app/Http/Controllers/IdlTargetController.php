@@ -12,17 +12,37 @@ class IdlTargetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $year = $request->get('year', 2026);
+
+        // Get available years from database
+        $availableYears = DB::table('idl_targets')
+            ->select('year')
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->pluck('year')
+            ->toArray();
+
+        // Ensure 2025 and 2026 are in the list
+        if (!in_array(2025, $availableYears)) {
+            $availableYears[] = 2025;
+        }
+        if (!in_array(2026, $availableYears)) {
+            $availableYears[] = 2026;
+        }
+        sort($availableYears);
+
         $idlTargets = DB::table('idl_targets')
-        ->join('villages', 'idl_targets.village_id', '=', 'villages.id')
-        ->select('idl_targets.*', 'villages.name')
-        ->get();
+            ->join('villages', 'idl_targets.village_id', '=', 'villages.id')
+            ->select('idl_targets.*', 'villages.name')
+            ->where('idl_targets.year', $year)
+            ->get();
 
-        $sumBoys = DB::table('idl_targets')->sum('sum_boys');
-        $sumGirls = DB::table('idl_targets')->sum('sum_girls');
+        $sumBoys = DB::table('idl_targets')->where('year', $year)->sum('sum_boys');
+        $sumGirls = DB::table('idl_targets')->where('year', $year)->sum('sum_girls');
 
-        return view('pages.idl-target.index', compact('idlTargets', 'sumBoys', 'sumGirls'));
+        return view('pages.idl-target.index', compact('idlTargets', 'sumBoys', 'sumGirls', 'year', 'availableYears'));
     }
 
     /**
@@ -45,9 +65,12 @@ class IdlTargetController extends Controller
             'village_id' => 'required',
         ]);
 
+        // Auto-set year to 2026 for new records
+        $validated['year'] = 2026;
+
         IdlTarget::create($validated);
 
-        return redirect()->route('idl-target.index')->with('success', 'Data Sasaran berhasil disimpan');
+        return redirect()->route('idl-target.index', ['year' => 2026])->with('success', 'Data Sasaran berhasil disimpan');
     }
 
     /**

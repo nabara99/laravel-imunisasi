@@ -57,7 +57,14 @@
                                                 <td>
                                                     <a href="{{ route('children.edit', $children->id) }}" title="Edit">
                                                         <i class="fa-solid fa-pencil"></i>
-                                                    </a>
+                                                    </a> &nbsp;
+                                                    <form action="{{ route('children.destroy', $children->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" title="Hapus" style="border: none; background: none; padding: 0; color: red; cursor: pointer;" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -98,8 +98,11 @@ class ChildrenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Children $children)
+    public function destroy($id)
     {
-        //
+        $children = Children::findOrFail($id);
+        $children->delete();
+
+        return redirect()->route('children.index')->with('success', 'Data anak berhasil dihapus');
     }
 }

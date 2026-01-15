@@ -12,17 +12,37 @@ class IblTargetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $year = $request->get('year', 2026);
+
+        // Get available years from database
+        $availableYears = DB::table('ibl_targets')
+            ->select('year')
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->pluck('year')
+            ->toArray();
+
+        // Ensure 2025 and 2026 are in the list
+        if (!in_array(2025, $availableYears)) {
+            $availableYears[] = 2025;
+        }
+        if (!in_array(2026, $availableYears)) {
+            $availableYears[] = 2026;
+        }
+        sort($availableYears);
+
         $iblTargets = DB::table('ibl_targets')
-        ->join('villages', 'ibl_targets.village_id', '=', 'villages.id')
-        ->select('ibl_targets.*', 'villages.name')
-        ->get();
+            ->join('villages', 'ibl_targets.village_id', '=', 'villages.id')
+            ->select('ibl_targets.*', 'villages.name')
+            ->where('ibl_targets.year', $year)
+            ->get();
 
-        $sumBoys = DB::table('ibl_targets')->sum('sum_boys');
-        $sumGirls = DB::table('ibl_targets')->sum('sum_girls');
+        $sumBoys = DB::table('ibl_targets')->where('year', $year)->sum('sum_boys');
+        $sumGirls = DB::table('ibl_targets')->where('year', $year)->sum('sum_girls');
 
-        return view('pages.ibl-target.index', compact('iblTargets', 'sumBoys', 'sumGirls'));
+        return view('pages.ibl-target.index', compact('iblTargets', 'sumBoys', 'sumGirls', 'year', 'availableYears'));
     }
 
     /**
@@ -45,9 +65,12 @@ class IblTargetController extends Controller
             'village_id' => 'required',
         ]);
 
+        // Auto-set year to 2026 for new records
+        $validated['year'] = 2026;
+
         IblTarget::create($validated);
 
-        return redirect()->route('ibl-target.index')->with('success', 'Data Sasaran berhasil disimpan');
+        return redirect()->route('ibl-target.index', ['year' => 2026])->with('success', 'Data Sasaran berhasil disimpan');
     }
 
     /**

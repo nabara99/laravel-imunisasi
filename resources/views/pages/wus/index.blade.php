@@ -62,6 +62,13 @@
                                                     <a href="{{ route('wus.edit', $wus->id) }}" title="Edit">
                                                         <i class="fa-solid fa-pencil"></i>
                                                     </a>
+                                                    <form action="{{ route('wus.destroy', $wus->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" title="Hapus" style="border: none; background: none; padding: 0; color: red; cursor: pointer;" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

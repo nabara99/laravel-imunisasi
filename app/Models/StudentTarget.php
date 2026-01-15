@@ -15,6 +15,7 @@ class StudentTarget extends Model
         'classroom',
         'sum_boys',
         'sum_girls',
+        'year',
     ];
 
     public function school()

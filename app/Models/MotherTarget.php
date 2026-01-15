@@ -14,5 +14,6 @@ class MotherTarget extends Model
         'pregnant',
         'no_pregnant',
         'village_id',
+        'year',
     ];
 }

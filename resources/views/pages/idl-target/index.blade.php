@@ -26,6 +26,20 @@
                                         Sasaran</a>
                                 </div>
                             </div>
+
+                            <!-- Tab Navigation -->
+                            <ul class="nav nav-tabs mb-3" role="tablist">
+                                @foreach($availableYears as $availableYear)
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link {{ $year == $availableYear ? 'active' : '' }}"
+                                           href="{{ route('idl-target.index', ['year' => $availableYear]) }}"
+                                           role="tab">
+                                            Tahun {{ $availableYear }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>

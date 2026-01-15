@@ -12,17 +12,35 @@ class MotherTargetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $year = $request->get('year', 2026);
+
+        $availableYears = DB::table('mother_targets')
+            ->select('year')
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->pluck('year')
+            ->toArray();
+
+        if (!in_array(2025, $availableYears)) {
+            $availableYears[] = 2025;
+        }
+        if (!in_array(2026, $availableYears)) {
+            $availableYears[] = 2026;
+        }
+        sort($availableYears);
+
         $motherTargets = DB::table('mother_targets')
         ->join('villages', 'mother_targets.village_id', '=', 'villages.id')
         ->select('mother_targets.*', 'villages.name')
+        ->where('mother_targets.year', $year)
         ->get();
 
-        $sumPregnant = DB::table('mother_targets')->sum('pregnant');
-        $sumNoPregnant = DB::table('mother_targets')->sum('no_pregnant');
+        $sumPregnant = DB::table('mother_targets')->where('year', $year)->sum('pregnant');
+        $sumNoPregnant = DB::table('mother_targets')->where('year', $year)->sum('no_pregnant');
 
-        return view('pages.mother-target.index', compact('motherTargets', 'sumPregnant', 'sumNoPregnant'));
+        return view('pages.mother-target.index', compact('motherTargets', 'sumPregnant', 'sumNoPregnant', 'year', 'availableYears'));
     }
 
     /**
@@ -45,9 +63,11 @@ class MotherTargetController extends Controller
             'village_id' => 'required',
         ]);
 
+        $validated['year'] = 2026;
+
         MotherTarget::create($validated);
 
-        return redirect()->route('mother-target.index')->with('success', 'Data Sasaran WUS berhasil disimpan');
+        return redirect()->route('mother-target.index', ['year' => 2026])->with('success', 'Data Sasaran WUS berhasil disimpan');
     }
 
     /**

@@ -96,8 +96,11 @@ class WusController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wus $wus)
+    public function destroy($id)
     {
-        //
+        $wus = Wus::findOrFail($id);
+        $wus->delete();
+
+        return redirect()->route('wus.index')->with('success', 'Data berhasil dihapus');
     }
 }

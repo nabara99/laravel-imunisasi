@@ -12,17 +12,35 @@ class StudentTargetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $year = $request->get('year', 2026);
+
+        $availableYears = DB::table('student_targets')
+            ->select('year')
+            ->distinct()
+            ->orderBy('year', 'asc')
+            ->pluck('year')
+            ->toArray();
+
+        if (!in_array(2025, $availableYears)) {
+            $availableYears[] = 2025;
+        }
+        if (!in_array(2026, $availableYears)) {
+            $availableYears[] = 2026;
+        }
+        sort($availableYears);
+
         $students = DB::table('student_targets')
         ->join('schools', 'student_targets.id_school', '=', 'schools.id')
         ->select('student_targets.*', 'schools.name')
+        ->where('student_targets.year', $year)
         ->get();
 
-        $sumBoys = DB::table('student_targets')->sum('sum_boys');
-        $sumGirls = DB::table('student_targets')->sum('sum_girls');
+        $sumBoys = DB::table('student_targets')->where('year', $year)->sum('sum_boys');
+        $sumGirls = DB::table('student_targets')->where('year', $year)->sum('sum_girls');
 
-        return view('pages.student-target.index', compact('students', 'sumBoys', 'sumGirls'));
+        return view('pages.student-target.index', compact('students', 'sumBoys', 'sumGirls', 'year', 'availableYears'));
     }
 
     /**
@@ -46,9 +64,11 @@ class StudentTargetController extends Controller
             'sum_girls' => 'required|numeric',
         ]);
 
+        $validated['year'] = 2026;
+
         StudentTarget::create($validated);
 
-        return redirect()->route('student-target.index')->with('success', 'Data Sasaran berhasil disimpan');
+        return redirect()->route('student-target.index', ['year' => 2026])->with('success', 'Data Sasaran berhasil disimpan');
     }
 
     /**
