@@ -48,7 +48,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('bias', StudentImunController::class);
     Route::resource('report', ReportController::class);
     Route::post('report-idl', [ReportController::class, 'reportIDL'])->name('report-idl');
+    Route::post('report-idl-excel', [ReportController::class, 'reportIDLExcel'])->name('report-idl-excel');
     Route::post('report-ibl', [ReportController::class, 'reportIBL'])->name('report-ibl');
+    Route::post('report-ibl-excel', [ReportController::class, 'reportIBLExcel'])->name('report-ibl-excel');
     Route::post('report-tt', [ReportController::class, 'reportTT'])->name('report-tt');
     Route::post('report-bias', [ReportController::class, 'reportBIAS'])->name('report-bias');
 });
