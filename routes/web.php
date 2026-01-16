@@ -17,6 +17,11 @@ use App\Http\Controllers\StudentTargetController;
 use App\Http\Controllers\VillageController;
 use App\Http\Controllers\WusController;
 use App\Http\Controllers\WusImunController;
+use App\Http\Controllers\VaccineCategoryController;
+use App\Http\Controllers\VaccineController;
+use App\Http\Controllers\VaccineInController;
+use App\Http\Controllers\VaccineOutController;
+use App\Http\Controllers\VaccineReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -53,4 +58,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('report-ibl-excel', [ReportController::class, 'reportIBLExcel'])->name('report-ibl-excel');
     Route::post('report-tt', [ReportController::class, 'reportTT'])->name('report-tt');
     Route::post('report-bias', [ReportController::class, 'reportBIAS'])->name('report-bias');
+
+    // Vaccine Inventory Routes
+    Route::resource('vaccine-category', VaccineCategoryController::class);
+    Route::resource('vaccines', VaccineController::class);
+    Route::resource('vaccine-in', VaccineInController::class);
+    Route::resource('vaccine-out', VaccineOutController::class);
+    Route::get('vaccine-report', [VaccineReportController::class, 'index'])->name('vaccine-report.index');
+    Route::post('vaccine-report/stock', [VaccineReportController::class, 'reportStock'])->name('vaccine-report.stock');
+    Route::post('vaccine-report/in', [VaccineReportController::class, 'reportIn'])->name('vaccine-report.in');
+    Route::post('vaccine-report/out', [VaccineReportController::class, 'reportOut'])->name('vaccine-report.out');
 });
