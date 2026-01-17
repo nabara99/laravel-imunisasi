@@ -201,13 +201,20 @@
             document.getElementById('quantity').value = vaccineIn.quantity;
             document.getElementById('notes').value = vaccineIn.notes || '';
 
-            // Hide vaccine fields on edit and remove required attribute
-            document.getElementById('vaccineFields').style.display = 'none';
-            document.getElementById('vaccine_name').required = false;
-            document.getElementById('id_category_vaccine').required = false;
-            document.getElementById('batch_number').required = false;
-            document.getElementById('expired_date').required = false;
-            document.getElementById('price').required = false;
+            // Show vaccine fields and populate with current data
+            document.getElementById('vaccineFields').style.display = 'block';
+            document.getElementById('vaccine_name').value = vaccineIn.vaccine.vaccine_name;
+            document.getElementById('id_category_vaccine').value = vaccineIn.vaccine.id_category_vaccine;
+            document.getElementById('batch_number').value = vaccineIn.vaccine.batch_number;
+            document.getElementById('expired_date').value = vaccineIn.vaccine.expired_date.split('T')[0];
+            document.getElementById('price').value = vaccineIn.vaccine.price;
+
+            // Make all fields required
+            document.getElementById('vaccine_name').required = true;
+            document.getElementById('id_category_vaccine').required = true;
+            document.getElementById('batch_number').required = true;
+            document.getElementById('expired_date').required = true;
+            document.getElementById('price').required = true;
 
             document.getElementById('formMethod').value = 'PUT';
             document.getElementById('vaccineInForm').action = `/vaccine-in/${vaccineIn.id}`;

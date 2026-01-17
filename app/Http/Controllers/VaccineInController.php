@@ -68,6 +68,11 @@ class VaccineInController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'vaccine_name' => 'required|string|max:255',
+            'id_category_vaccine' => 'required|exists:vaccine_categories,id',
+            'batch_number' => 'required|string|max:255',
+            'expired_date' => 'required|date|after:today',
+            'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
             'date_in' => 'required|date',
             'notes' => 'nullable|string'
@@ -75,19 +80,30 @@ class VaccineInController extends Controller
 
         DB::transaction(function () use ($request, $id) {
             $vaccineIn = VaccineIn::findOrFail($id);
+            $vaccine = $vaccineIn->vaccine;
             $oldQuantity = $vaccineIn->quantity;
-            $difference = $request->quantity - $oldQuantity;
+            $newQuantity = $request->quantity;
+            $difference = $newQuantity - $oldQuantity;
+
+            // Update vaccine data
+            $vaccine->update([
+                'vaccine_name' => $request->vaccine_name,
+                'id_category_vaccine' => $request->id_category_vaccine,
+                'batch_number' => $request->batch_number,
+                'expired_date' => $request->expired_date,
+                'price' => $request->price
+            ]);
 
             // Update vaccine in
             $vaccineIn->update([
                 'date_in' => $request->date_in,
-                'quantity' => $request->quantity,
+                'quantity' => $newQuantity,
                 'notes' => $request->notes
             ]);
 
-            // Adjust stock
+            // Adjust stock if quantity changed
             if ($difference != 0) {
-                $vaccineIn->vaccine->increment('stock', $difference);
+                $vaccine->increment('stock', $difference);
             }
         });
 
