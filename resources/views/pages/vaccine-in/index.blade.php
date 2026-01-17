@@ -102,7 +102,6 @@
                 <form id="vaccineInForm" method="POST" action="{{ route('vaccine-in.store') }}">
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
-                    <input type="hidden" name="id" id="vaccineInId">
 
                     <div class="modal-body">
                         <div class="row">
@@ -111,7 +110,7 @@
                                 <input type="date" name="date_in" id="date_in" class="form-control" required>
                             </div>
 
-                            <div class="col-md-6 mb-3" id="quantityField">
+                            <div class="col-md-6 mb-3">
                                 <label for="quantity" class="form-label">Jumlah *</label>
                                 <input type="number" name="quantity" id="quantity" class="form-control" min="1"
                                     required>
@@ -123,13 +122,12 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="vaccine_name" class="form-label">Nama Vaksin *</label>
                                     <input type="text" name="vaccine_name" id="vaccine_name" class="form-control"
-                                        placeholder="Contoh: Sinovac, AstraZeneca" required>
+                                        placeholder="Contoh: Sinovac, AstraZeneca">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label for="id_category_vaccine" class="form-label">Kategori Kemasan *</label>
-                                    <select name="id_category_vaccine" id="id_category_vaccine" class="form-control"
-                                        required>
+                                    <select name="id_category_vaccine" id="id_category_vaccine" class="form-control">
                                         <option value="">Pilih Kategori</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -142,20 +140,19 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="batch_number" class="form-label">Nomor Batch *</label>
                                     <input type="text" name="batch_number" id="batch_number" class="form-control"
-                                        placeholder="Contoh: BATCH001" required>
+                                        placeholder="Contoh: BATCH001">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label for="expired_date" class="form-label">Tanggal Kadaluarsa *</label>
-                                    <input type="date" name="expired_date" id="expired_date" class="form-control"
-                                        required>
+                                    <input type="date" name="expired_date" id="expired_date" class="form-control">
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="price" class="form-label">Harga per Unit (Rp) *</label>
                                 <input type="number" name="price" id="price" class="form-control" min="0"
-                                    placeholder="0" required>
+                                    placeholder="0">
                             </div>
                         </div>
 
@@ -187,18 +184,30 @@
             document.getElementById('formMethod').value = 'POST';
             document.getElementById('vaccineInForm').action = '{{ route('vaccine-in.store') }}';
             document.getElementById('vaccineInModalLabel').textContent = 'Tambah Penerimaan Vaksin';
+
+            // Show vaccine fields and make them required
             document.getElementById('vaccineFields').style.display = 'block';
+            document.getElementById('vaccine_name').required = true;
+            document.getElementById('id_category_vaccine').required = true;
+            document.getElementById('batch_number').required = true;
+            document.getElementById('expired_date').required = true;
+            document.getElementById('price').required = true;
+
             document.getElementById('date_in').value = new Date().toISOString().split('T')[0];
         }
 
         function editVaccineIn(vaccineIn) {
-            document.getElementById('vaccineInId').value = vaccineIn.id;
             document.getElementById('date_in').value = vaccineIn.date_in.split('T')[0];
             document.getElementById('quantity').value = vaccineIn.quantity;
             document.getElementById('notes').value = vaccineIn.notes || '';
 
-            // Hide vaccine fields on edit (only allow editing quantity, date, notes)
+            // Hide vaccine fields on edit and remove required attribute
             document.getElementById('vaccineFields').style.display = 'none';
+            document.getElementById('vaccine_name').required = false;
+            document.getElementById('id_category_vaccine').required = false;
+            document.getElementById('batch_number').required = false;
+            document.getElementById('expired_date').required = false;
+            document.getElementById('price').required = false;
 
             document.getElementById('formMethod').value = 'PUT';
             document.getElementById('vaccineInForm').action = `/vaccine-in/${vaccineIn.id}`;

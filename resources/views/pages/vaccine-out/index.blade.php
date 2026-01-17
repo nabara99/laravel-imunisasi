@@ -99,7 +99,6 @@
                 <form id="vaccineOutForm" method="POST" action="{{ route('vaccine-out.store') }}">
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
-                    <input type="hidden" name="id" id="vaccineOutId">
 
                     <div class="modal-body">
                         <div class="mb-3">
@@ -109,7 +108,7 @@
 
                         <div class="mb-3" id="vaccineSelectField">
                             <label for="id_vaccine" class="form-label">Pilih Vaksin *</label>
-                            <select name="id_vaccine" id="id_vaccine" class="form-control" required>
+                            <select name="id_vaccine" id="id_vaccine" class="form-control">
                                 <option value="">Pilih Vaksin</option>
                                 @foreach ($vaccines as $vaccine)
                                     <option value="{{ $vaccine->id }}" data-stock="{{ $vaccine->stock }}">
@@ -154,19 +153,23 @@
             document.getElementById('formMethod').value = 'POST';
             document.getElementById('vaccineOutForm').action = '{{ route('vaccine-out.store') }}';
             document.getElementById('vaccineOutModalLabel').textContent = 'Tambah Pengeluaran Vaksin';
+
+            // Show vaccine select and make it required
             document.getElementById('vaccineSelectField').style.display = 'block';
+            document.getElementById('id_vaccine').required = true;
+
             document.getElementById('date_out').value = new Date().toISOString().split('T')[0];
             document.getElementById('stockInfo').textContent = '';
         }
 
         function editVaccineOut(vaccineOut) {
-            document.getElementById('vaccineOutId').value = vaccineOut.id;
             document.getElementById('date_out').value = vaccineOut.date_out.split('T')[0];
             document.getElementById('quantity').value = vaccineOut.quantity;
             document.getElementById('notes').value = vaccineOut.notes || '';
 
-            // Hide vaccine select on edit
+            // Hide vaccine select on edit and remove required attribute
             document.getElementById('vaccineSelectField').style.display = 'none';
+            document.getElementById('id_vaccine').required = false;
 
             document.getElementById('formMethod').value = 'PUT';
             document.getElementById('vaccineOutForm').action = `/vaccine-out/${vaccineOut.id}`;
