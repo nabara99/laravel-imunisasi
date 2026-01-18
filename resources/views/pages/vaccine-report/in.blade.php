@@ -67,12 +67,12 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $vaccineIn->date_in->format('d/m/Y') }}</td>
-                    <td style="text-align: left">{{ $vaccineIn->vaccine->vaccine_name }}</td>
-                    <td>{{ $vaccineIn->vaccine->category->name }}</td>
-                    <td>{{ $vaccineIn->vaccine->batch_number }}</td>
-                    <td>{{ $vaccineIn->vaccine->expired_date->format('d/m/Y') }}</td>
-                    <td>{{ number_format($vaccineIn->quantity) }}</td>
-                    <td style="text-align: right">{{ number_format($vaccineIn->quantity * $vaccineIn->vaccine->price) }}
+                    <td style="text-align: left">{{ $vaccineIn->vaccine_name }}</td>
+                    <td>{{ $vaccineIn->category->name }}</td>
+                    <td>{{ $vaccineIn->batch_number }}</td>
+                    <td>{{ $vaccineIn->expired_date->format('d/m/Y') }}</td>
+                    <td>{{ number_format($vaccineIn->stock) }}</td>
+                    <td style="text-align: right">{{ number_format($vaccineIn->stock * $vaccineIn->price) }}
                     </td>
                     <td style="text-align: left">{{ $vaccineIn->notes ?? '-' }}</td>
                 </tr>

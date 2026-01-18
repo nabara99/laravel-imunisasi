@@ -12,7 +12,7 @@ class VaccineReportController extends Controller
 {
     public function index()
     {
-        $vaccines = Vaccine::with('category')->orderBy('vaccine_name')->get();
+        $vaccines = VaccineIn::with('category')->orderBy('vaccine_name')->get();
         return view('pages.vaccine-report.index', compact('vaccines'));
     }
 
@@ -35,10 +35,13 @@ class VaccineReportController extends Controller
         }
 
         $vaccines = $query->get()->map(function ($vaccine) use ($startDate, $endDate) {
-            $totalIn = VaccineIn::where('id_vaccine', $vaccine->id)
+            // Hitung total masuk dalam periode
+            $totalIn = VaccineIn::where('vaccine_name', $vaccine->vaccine_name)
+                ->where('batch_number', $vaccine->batch_number)
                 ->whereBetween('date_in', [$startDate, $endDate])
-                ->sum('quantity');
+                ->sum('stock');
 
+            // Hitung total keluar dalam periode
             $totalOut = VaccineOut::where('id_vaccine', $vaccine->id)
                 ->whereBetween('date_out', [$startDate, $endDate])
                 ->sum('quantity');
@@ -58,26 +61,26 @@ class VaccineReportController extends Controller
         $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'id_vaccine' => 'nullable|exists:vaccines,id'
+            'id_vaccine' => 'nullable|exists:vaccine_in,id'
         ]);
 
         $startDate = $request->start_date;
         $endDate = $request->end_date;
         $vaccineId = $request->id_vaccine;
 
-        $query = VaccineIn::with('vaccine.category')
+        $query = VaccineIn::with('category')
             ->whereBetween('date_in', [$startDate, $endDate]);
 
         if ($vaccineId) {
-            $query->where('id_vaccine', $vaccineId);
+            $query->where('id', $vaccineId);
         }
 
         $vaccineIns = $query->orderBy('date_in', 'desc')->get();
 
         $summary = [
-            'total_quantity' => $vaccineIns->sum('quantity'),
+            'total_quantity' => $vaccineIns->sum('stock'),
             'total_value' => $vaccineIns->sum(function ($item) {
-                return $item->quantity * $item->vaccine->price;
+                return $item->stock * $item->price;
             }),
             'total_transactions' => $vaccineIns->count()
         ];
@@ -109,7 +112,7 @@ class VaccineReportController extends Controller
         $summary = [
             'total_quantity' => $vaccineOuts->sum('quantity'),
             'total_value' => $vaccineOuts->sum(function ($item) {
-                return $item->quantity * $item->vaccine->price;
+                return $item->quantity * ($item->vaccine ? $item->vaccine->price : 0);
             }),
             'total_transactions' => $vaccineOuts->count()
         ];

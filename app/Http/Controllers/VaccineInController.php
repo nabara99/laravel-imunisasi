@@ -26,7 +26,7 @@ class VaccineInController extends Controller
         $request->validate([
             'vaccine_name' => 'required|string|max:255',
             'id_category_vaccine' => 'required|exists:vaccine_categories,id',
-            'batch_number' => 'required|string|max:255',
+            'batch_number' => 'required|string|max:255|unique:vaccine_in,batch_number',
             'expired_date' => 'required|date|after:today',
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
@@ -68,7 +68,7 @@ class VaccineInController extends Controller
         $request->validate([
             'vaccine_name' => 'required|string|max:255',
             'id_category_vaccine' => 'required|exists:vaccine_categories,id',
-            'batch_number' => 'required|string|max:255',
+            'batch_number' => 'required|string|max:255|unique:vaccine_in,batch_number,'.$id,
             'expired_date' => 'required|date|after:today',
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
