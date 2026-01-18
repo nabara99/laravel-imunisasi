@@ -9,18 +9,23 @@ class VaccineIn extends Model
     protected $table = 'vaccine_in';
 
     protected $fillable = [
+        'vaccine_name',
+        'id_category_vaccine',
+        'price',
+        'batch_number',
+        'expired_date',
+        'stock',
         'date_in',
-        'id_vaccine',
-        'quantity',
         'notes'
     ];
 
     protected $casts = [
+        'expired_date' => 'date',
         'date_in' => 'date'
     ];
 
-    public function vaccine()
+    public function category()
     {
-        return $this->belongsTo(Vaccine::class, 'id_vaccine');
+        return $this->belongsTo(VaccineCategory::class, 'id_category_vaccine');
     }
 }

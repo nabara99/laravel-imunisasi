@@ -57,12 +57,12 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $vaccineIn->date_in->format('d/m/Y') }}</td>
-                                                <td>{{ $vaccineIn->vaccine->vaccine_name }}</td>
-                                                <td>{{ $vaccineIn->vaccine->category->name }}</td>
-                                                <td>{{ $vaccineIn->vaccine->batch_number }}</td>
-                                                <td>{{ $vaccineIn->vaccine->expired_date->format('d/m/Y') }}</td>
-                                                <td>{{ number_format($vaccineIn->quantity) }}</td>
-                                                <td>Rp {{ number_format($vaccineIn->vaccine->price) }}</td>
+                                                <td>{{ $vaccineIn->vaccine_name }}</td>
+                                                <td>{{ $vaccineIn->category->name }}</td>
+                                                <td>{{ $vaccineIn->batch_number }}</td>
+                                                <td>{{ $vaccineIn->expired_date->format('d/m/Y') }}</td>
+                                                <td>{{ number_format($vaccineIn->stock) }}</td>
+                                                <td>Rp {{ number_format($vaccineIn->price) }}</td>
                                                 <td>{{ $vaccineIn->notes ?? '-' }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm btn-primary"
@@ -198,16 +198,16 @@
 
         function editVaccineIn(vaccineIn) {
             document.getElementById('date_in').value = vaccineIn.date_in.split('T')[0];
-            document.getElementById('quantity').value = vaccineIn.quantity;
+            document.getElementById('quantity').value = vaccineIn.stock;
             document.getElementById('notes').value = vaccineIn.notes || '';
 
             // Show vaccine fields and populate with current data
             document.getElementById('vaccineFields').style.display = 'block';
-            document.getElementById('vaccine_name').value = vaccineIn.vaccine.vaccine_name;
-            document.getElementById('id_category_vaccine').value = vaccineIn.vaccine.id_category_vaccine;
-            document.getElementById('batch_number').value = vaccineIn.vaccine.batch_number;
-            document.getElementById('expired_date').value = vaccineIn.vaccine.expired_date.split('T')[0];
-            document.getElementById('price').value = vaccineIn.vaccine.price;
+            document.getElementById('vaccine_name').value = vaccineIn.vaccine_name;
+            document.getElementById('id_category_vaccine').value = vaccineIn.id_category_vaccine;
+            document.getElementById('batch_number').value = vaccineIn.batch_number;
+            document.getElementById('expired_date').value = vaccineIn.expired_date.split('T')[0];
+            document.getElementById('price').value = vaccineIn.price;
 
             // Make all fields required
             document.getElementById('vaccine_name').required = true;

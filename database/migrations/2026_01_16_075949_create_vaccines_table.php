@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('batch_number');
             $table->date('expired_date');
             $table->integer('stock')->default(0);
+            $table->date('date_in');
             $table->timestamps();
         });
     }

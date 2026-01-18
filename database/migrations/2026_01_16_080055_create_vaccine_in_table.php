@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('vaccine_in', function (Blueprint $table) {
             $table->id();
+            $table->string('vaccine_name');
+            $table->foreignId('id_category_vaccine')->constrained('vaccine_categories')->onDelete('restrict');
+            $table->integer('price');
+            $table->string('batch_number');
+            $table->date('expired_date');
+            $table->integer('stock')->default(0);
             $table->date('date_in');
-            $table->foreignId('id_vaccine')->constrained('vaccines')->onDelete('restrict');
-            $table->integer('quantity');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

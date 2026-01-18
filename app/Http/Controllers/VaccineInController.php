@@ -12,7 +12,7 @@ class VaccineInController extends Controller
 {
     public function index()
     {
-        $vaccineIns = VaccineIn::with('vaccine.category')
+        $vaccineIns = VaccineIn::with('category')
             ->latest('date_in')
             ->get();
 
@@ -35,30 +35,28 @@ class VaccineInController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            // Create or update vaccine
-            $vaccine = Vaccine::firstOrCreate(
-                [
-                    'vaccine_name' => $request->vaccine_name,
-                    'batch_number' => $request->batch_number,
-                ],
-                [
-                    'id_category_vaccine' => $request->id_category_vaccine,
-                    'price' => $request->price,
-                    'expired_date' => $request->expired_date,
-                    'stock' => 0
-                ]
-            );
-
-            // Create vaccine in record
-            VaccineIn::create([
+            // Create vaccine_in record
+            $vaccineIn = VaccineIn::create([
+                'vaccine_name' => $request->vaccine_name,
+                'id_category_vaccine' => $request->id_category_vaccine,
+                'price' => $request->price,
+                'batch_number' => $request->batch_number,
+                'expired_date' => $request->expired_date,
+                'stock' => $request->quantity,
                 'date_in' => $request->date_in,
-                'id_vaccine' => $vaccine->id,
-                'quantity' => $request->quantity,
                 'notes' => $request->notes
             ]);
 
-            // Update stock
-            $vaccine->increment('stock', $request->quantity);
+            // Create vaccine record (same data without notes)
+            Vaccine::create([
+                'vaccine_name' => $request->vaccine_name,
+                'id_category_vaccine' => $request->id_category_vaccine,
+                'price' => $request->price,
+                'batch_number' => $request->batch_number,
+                'expired_date' => $request->expired_date,
+                'stock' => $request->quantity,
+                'date_in' => $request->date_in
+            ]);
         });
 
         return redirect()->route('vaccine-in.index')
@@ -80,30 +78,36 @@ class VaccineInController extends Controller
 
         DB::transaction(function () use ($request, $id) {
             $vaccineIn = VaccineIn::findOrFail($id);
-            $vaccine = $vaccineIn->vaccine;
-            $oldQuantity = $vaccineIn->quantity;
-            $newQuantity = $request->quantity;
-            $difference = $newQuantity - $oldQuantity;
 
-            // Update vaccine data
-            $vaccine->update([
+            // Find corresponding vaccine record based on old data
+            $vaccine = Vaccine::where('vaccine_name', $vaccineIn->vaccine_name)
+                ->where('batch_number', $vaccineIn->batch_number)
+                ->where('date_in', $vaccineIn->date_in)
+                ->first();
+
+            // Update vaccine_in record
+            $vaccineIn->update([
                 'vaccine_name' => $request->vaccine_name,
                 'id_category_vaccine' => $request->id_category_vaccine,
+                'price' => $request->price,
                 'batch_number' => $request->batch_number,
                 'expired_date' => $request->expired_date,
-                'price' => $request->price
-            ]);
-
-            // Update vaccine in
-            $vaccineIn->update([
+                'stock' => $request->quantity,
                 'date_in' => $request->date_in,
-                'quantity' => $newQuantity,
                 'notes' => $request->notes
             ]);
 
-            // Adjust stock if quantity changed
-            if ($difference != 0) {
-                $vaccine->increment('stock', $difference);
+            // Update vaccine record if found
+            if ($vaccine) {
+                $vaccine->update([
+                    'vaccine_name' => $request->vaccine_name,
+                    'id_category_vaccine' => $request->id_category_vaccine,
+                    'price' => $request->price,
+                    'batch_number' => $request->batch_number,
+                    'expired_date' => $request->expired_date,
+                    'stock' => $request->quantity,
+                    'date_in' => $request->date_in
+                ]);
             }
         });
 
@@ -116,21 +120,18 @@ class VaccineInController extends Controller
         try {
             DB::transaction(function () use ($id) {
                 $vaccineIn = VaccineIn::findOrFail($id);
-                $vaccine = $vaccineIn->vaccine;
 
-                // Check if stock is sufficient
-                if ($vaccine->stock < $vaccineIn->quantity) {
-                    throw new \Exception('Stok tidak mencukupi untuk menghapus data ini');
-                }
-
-                // Decrease stock
-                $vaccine->decrement('stock', $vaccineIn->quantity);
+                // Find corresponding vaccine record
+                $vaccine = Vaccine::where('vaccine_name', $vaccineIn->vaccine_name)
+                    ->where('batch_number', $vaccineIn->batch_number)
+                    ->where('date_in', $vaccineIn->date_in)
+                    ->first();
 
                 // Delete vaccine in record
                 $vaccineIn->delete();
 
-                // If vaccine has no more stock and no history, delete it
-                if ($vaccine->stock == 0 && $vaccine->vaccineIns()->count() == 0 && $vaccine->vaccineOuts()->count() == 0) {
+                // Delete corresponding vaccine record if found
+                if ($vaccine) {
                     $vaccine->delete();
                 }
             });

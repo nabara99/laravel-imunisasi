@@ -12,21 +12,18 @@ class Vaccine extends Model
         'price',
         'batch_number',
         'expired_date',
-        'stock'
+        'stock',
+        'date_in',
     ];
 
     protected $casts = [
-        'expired_date' => 'date'
+        'expired_date' => 'date',
+        'date_in' => 'date'
     ];
 
     public function category()
     {
         return $this->belongsTo(VaccineCategory::class, 'id_category_vaccine');
-    }
-
-    public function vaccineIns()
-    {
-        return $this->hasMany(VaccineIn::class, 'id_vaccine');
     }
 
     public function vaccineOuts()
