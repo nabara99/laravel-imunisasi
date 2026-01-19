@@ -24,9 +24,9 @@ class VaccineInController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'vaccine_name' => 'required|string|max:255',
+            'vaccine_name' => 'required|string|max:150',
             'id_category_vaccine' => 'required|exists:vaccine_categories,id',
-            'batch_number' => 'required|string|max:255|unique:vaccine_in,batch_number',
+            'batch_number' => 'required|string|max:100',
             'expired_date' => 'required|date|after:today',
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
@@ -66,9 +66,9 @@ class VaccineInController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'vaccine_name' => 'required|string|max:255',
+            'vaccine_name' => 'required|string|max:150',
             'id_category_vaccine' => 'required|exists:vaccine_categories,id',
-            'batch_number' => 'required|string|max:255|unique:vaccine_in,batch_number,'.$id,
+            'batch_number' => 'required|string|max:100',
             'expired_date' => 'required|date|after:today',
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
@@ -80,9 +80,7 @@ class VaccineInController extends Controller
             $vaccineIn = VaccineIn::findOrFail($id);
 
             // Find corresponding vaccine record based on old data
-            $vaccine = Vaccine::where('vaccine_name', $vaccineIn->vaccine_name)
-                ->where('batch_number', $vaccineIn->batch_number)
-                ->where('date_in', $vaccineIn->date_in)
+            $vaccine = Vaccine::where('created_at', $vaccineIn->created_at)
                 ->first();
 
             // Update vaccine_in record
@@ -122,9 +120,7 @@ class VaccineInController extends Controller
                 $vaccineIn = VaccineIn::findOrFail($id);
 
                 // Find corresponding vaccine record
-                $vaccine = Vaccine::where('vaccine_name', $vaccineIn->vaccine_name)
-                    ->where('batch_number', $vaccineIn->batch_number)
-                    ->where('date_in', $vaccineIn->date_in)
+                $vaccine = Vaccine::where('created_at', $vaccineIn->created_at)
                     ->first();
 
                 // Delete vaccine in record
