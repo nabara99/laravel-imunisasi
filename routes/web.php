@@ -68,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('vaccine-out', VaccineOutController::class);
     Route::get('vaccine-report', [VaccineReportController::class, 'index'])->name('vaccine-report.index');
     Route::post('vaccine-report/stock', [VaccineReportController::class, 'reportStock'])->name('vaccine-report.stock');
+    Route::post('vaccine-report/stock-excel', [VaccineReportController::class, 'reportStockExcel'])->name('vaccine-report.stock-excel');
     Route::post('vaccine-report/in', [VaccineReportController::class, 'reportIn'])->name('vaccine-report.in');
+    Route::post('vaccine-report/in-excel', [VaccineReportController::class, 'reportInExcel'])->name('vaccine-report.in-excel');
     Route::post('vaccine-report/out', [VaccineReportController::class, 'reportOut'])->name('vaccine-report.out');
+    Route::post('vaccine-report/out-excel', [VaccineReportController::class, 'reportOutExcel'])->name('vaccine-report.out-excel');
 });

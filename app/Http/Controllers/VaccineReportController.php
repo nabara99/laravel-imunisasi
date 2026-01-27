@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VaccineInExport;
+use App\Exports\VaccineOutExport;
+use App\Exports\VaccineStockExport;
 use App\Models\Vaccine;
 use App\Models\VaccineIn;
 use App\Models\VaccineOut;
@@ -56,6 +59,18 @@ class VaccineReportController extends Controller
         return view('pages.vaccine-report.stock', compact('vaccines', 'startDate', 'endDate'));
     }
 
+    public function reportStockExcel(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'id_vaccine' => 'nullable|exists:vaccines,id'
+        ]);
+
+        $exporter = new VaccineStockExport($request->start_date, $request->end_date, $request->id_vaccine);
+        return $exporter->download();
+    }
+
     public function reportIn(Request $request)
     {
         $request->validate([
@@ -88,6 +103,18 @@ class VaccineReportController extends Controller
         return view('pages.vaccine-report.in', compact('vaccineIns', 'startDate', 'endDate', 'summary'));
     }
 
+    public function reportInExcel(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'id_vaccine' => 'nullable|exists:vaccine_in,id'
+        ]);
+
+        $exporter = new VaccineInExport($request->start_date, $request->end_date, $request->id_vaccine);
+        return $exporter->download();
+    }
+
     public function reportOut(Request $request)
     {
         $request->validate([
@@ -118,5 +145,17 @@ class VaccineReportController extends Controller
         ];
 
         return view('pages.vaccine-report.out', compact('vaccineOuts', 'startDate', 'endDate', 'summary'));
+    }
+
+    public function reportOutExcel(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'id_vaccine' => 'nullable|exists:vaccines,id'
+        ]);
+
+        $exporter = new VaccineOutExport($request->start_date, $request->end_date, $request->id_vaccine);
+        return $exporter->download();
     }
 }
