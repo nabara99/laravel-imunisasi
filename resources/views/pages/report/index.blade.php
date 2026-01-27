@@ -91,17 +91,21 @@
                                 <div class="row">
                                     <div class="col-6">
                                         Tanggal awal
-                                        <input type="date" id="start_date" class="form-control" name="start_date"
+                                        <input type="date" id="start_date_bias" class="form-control" name="start_date"
                                             required>
                                     </div>
                                     <div class="col-6">
                                         Tanggal akhir
-                                        <input type="date" id="end_date" class="form-control" name="end_date" required>
+                                        <input type="date" id="end_date_bias" class="form-control" name="end_date" required>
                                     </div>
                                 </div> <br>
-                                <button type="submit" class="btn btn-dark">
+                                <button type="submit" class="btn btn-warning" id="print-bias-btn" disabled>
                                     <i class="link-icon" data-feather="printer"></i>
                                     <span class="link-title">Cetak</span>
+                                </button>
+                                <button type="button" class="btn btn-success" id="excel-bias-btn" disabled>
+                                    <i class="link-icon" data-feather="download"></i>
+                                    <span class="link-title">Excel</span>
                                 </button>
                                 </p>
                             </form>
@@ -121,17 +125,21 @@
                                 <div class="row">
                                     <div class="col-6">
                                         Tanggal awal
-                                        <input type="date" id="start_date" class="form-control" name="start_date"
+                                        <input type="date" id="start_date_tt" class="form-control" name="start_date"
                                             required>
                                     </div>
                                     <div class="col-6">
                                         Tanggal akhir
-                                        <input type="date" id="end_date" class="form-control" name="end_date" required>
+                                        <input type="date" id="end_date_tt" class="form-control" name="end_date" required>
                                     </div>
                                 </div> <br>
-                                <button type="submit" class="btn btn-secondary">
+                                <button type="submit" class="btn btn-warning" id="print-tt-btn" disabled>
                                     <i class="link-icon" data-feather="printer"></i>
                                     <span class="link-title">Cetak</span>
+                                </button>
+                                <button type="button" class="btn btn-success" id="excel-tt-btn" disabled>
+                                    <i class="link-icon" data-feather="download"></i>
+                                    <span class="link-title">Excel</span>
                                 </button>
                                 </p>
                             </form>
@@ -239,6 +247,108 @@
             endInput.type = 'hidden';
             endInput.name = 'end_date';
             endInput.value = endDateIbl.value;
+            form.appendChild(endInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    });
+
+    // BIAS Report - Enable buttons when dates are selected
+    const startDateBias = document.querySelector('#start_date_bias');
+    const endDateBias = document.querySelector('#end_date_bias');
+    const printBtnBias = document.querySelector('#print-bias-btn');
+    const excelBtnBias = document.querySelector('#excel-bias-btn');
+
+    function checkBiasDates() {
+        if (startDateBias.value && endDateBias.value) {
+            printBtnBias.disabled = false;
+            excelBtnBias.disabled = false;
+        } else {
+            printBtnBias.disabled = true;
+            excelBtnBias.disabled = true;
+        }
+    }
+
+    startDateBias.addEventListener('change', checkBiasDates);
+    endDateBias.addEventListener('change', checkBiasDates);
+
+    // Excel download for BIAS
+    excelBtnBias.addEventListener('click', function() {
+        if (startDateBias.value && endDateBias.value) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route('report-bias-excel') }}';
+            form.target = '_blank';
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+            form.appendChild(csrfToken);
+
+            const startInput = document.createElement('input');
+            startInput.type = 'hidden';
+            startInput.name = 'start_date';
+            startInput.value = startDateBias.value;
+            form.appendChild(startInput);
+
+            const endInput = document.createElement('input');
+            endInput.type = 'hidden';
+            endInput.name = 'end_date';
+            endInput.value = endDateBias.value;
+            form.appendChild(endInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    });
+
+    // TT/WUS & Bumil Report - Enable buttons when dates are selected
+    const startDateTt = document.querySelector('#start_date_tt');
+    const endDateTt = document.querySelector('#end_date_tt');
+    const printBtnTt = document.querySelector('#print-tt-btn');
+    const excelBtnTt = document.querySelector('#excel-tt-btn');
+
+    function checkTtDates() {
+        if (startDateTt.value && endDateTt.value) {
+            printBtnTt.disabled = false;
+            excelBtnTt.disabled = false;
+        } else {
+            printBtnTt.disabled = true;
+            excelBtnTt.disabled = true;
+        }
+    }
+
+    startDateTt.addEventListener('change', checkTtDates);
+    endDateTt.addEventListener('change', checkTtDates);
+
+    // Excel download for TT/WUS & Bumil
+    excelBtnTt.addEventListener('click', function() {
+        if (startDateTt.value && endDateTt.value) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route('report-tt-excel') }}';
+            form.target = '_blank';
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token() }}';
+            form.appendChild(csrfToken);
+
+            const startInput = document.createElement('input');
+            startInput.type = 'hidden';
+            startInput.name = 'start_date';
+            startInput.value = startDateTt.value;
+            form.appendChild(startInput);
+
+            const endInput = document.createElement('input');
+            endInput.type = 'hidden';
+            endInput.name = 'end_date';
+            endInput.value = endDateTt.value;
             form.appendChild(endInput);
 
             document.body.appendChild(form);

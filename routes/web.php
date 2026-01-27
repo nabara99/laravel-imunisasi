@@ -57,7 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('report-ibl', [ReportController::class, 'reportIBL'])->name('report-ibl');
     Route::post('report-ibl-excel', [ReportController::class, 'reportIBLExcel'])->name('report-ibl-excel');
     Route::post('report-tt', [ReportController::class, 'reportTT'])->name('report-tt');
+    Route::post('report-tt-excel', [ReportController::class, 'reportTTExcel'])->name('report-tt-excel');
     Route::post('report-bias', [ReportController::class, 'reportBIAS'])->name('report-bias');
+    Route::post('report-bias-excel', [ReportController::class, 'reportBIASExcel'])->name('report-bias-excel');
 
     // Vaccine Inventory Routes
     Route::resource('vaccine-category', VaccineCategoryController::class);
