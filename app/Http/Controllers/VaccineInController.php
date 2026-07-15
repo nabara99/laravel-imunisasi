@@ -13,7 +13,8 @@ class VaccineInController extends Controller
     public function index()
     {
         $vaccineIns = VaccineIn::with('category')
-            ->latest('date_in')
+            ->orderByDesc('date_in')
+            ->orderByDesc('id')
             ->get();
 
         $categories = VaccineCategory::all();
