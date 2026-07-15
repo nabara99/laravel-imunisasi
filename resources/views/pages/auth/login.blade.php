@@ -246,13 +246,21 @@
 
                                             <div class="mb-3">
                                                 <label for="password" class="form-label">Password</label>
-                                                <input type="password"
-                                                       class="form-control @error('password') is-invalid @enderror"
-                                                       id="password"
-                                                       name="password"
-                                                       autocomplete="current-password"
-                                                       placeholder="••••••••"
-                                                       required>
+                                                <div class="position-relative">
+                                                    <input type="password"
+                                                           class="form-control @error('password') is-invalid @enderror"
+                                                           id="password"
+                                                           name="password"
+                                                           autocomplete="current-password"
+                                                           placeholder="••••••••"
+                                                           required>
+                                                    <button type="button"
+                                                            id="togglePassword"
+                                                            onclick="togglePasswordVisibility()"
+                                                            style="position:absolute;top:50%;right:12px;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#6c757d;padding:0;line-height:1;">
+                                                        <i data-feather="eye" id="eyeIcon"></i>
+                                                    </button>
+                                                </div>
                                                 @error('password')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
@@ -282,16 +290,6 @@
                                                         {{ $message }}
                                                     </div>
                                                 @enderror
-                                            </div>
-
-                                            <div class="mb-3 form-check">
-                                                <input type="checkbox"
-                                                       class="form-check-input"
-                                                       id="remember"
-                                                       name="remember">
-                                                <label class="form-check-label" for="remember">
-                                                    Ingat saya
-                                                </label>
                                             </div>
 
                                             <div>
@@ -342,6 +340,16 @@
                     console.error('Error loading captcha:', error);
                     document.getElementById('captcha-question').textContent = 'Error';
                 });
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            const isPassword = input.type === 'password';
+
+            input.type = isPassword ? 'text' : 'password';
+            icon.setAttribute('data-feather', isPassword ? 'eye-off' : 'eye');
+            feather.replace();
         }
 
         function refreshCaptcha() {
