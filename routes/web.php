@@ -5,6 +5,7 @@ use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ChildrenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IblController;
+use App\Http\Controllers\ImunisasiController;
 use App\Http\Controllers\IblTargetController;
 use App\Http\Controllers\IdlController;
 use App\Http\Controllers\IdlTargetController;
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('ibl-target', IblTargetController::class);
     Route::resource('mother-target', MotherTargetController::class);
     Route::resource('student-target', StudentTargetController::class);
+    Route::get('imunisasi', [ImunisasiController::class, 'index'])->name('imunisasi.index');
     Route::resource('idl-imun', IdlController::class);
     Route::resource('wus', WusController::class);
     Route::resource('ibl-imun', IblController::class);

@@ -66,14 +66,17 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item {{(str_contains(Route::currentRouteName(), 'idl-imun') || str_contains(Route::currentRouteName(), 'ibl-imun') || str_contains(Route::currentRouteName(), 'tt-imun') || str_contains(Route::currentRouteName(), 'bias')) ? 'active' : ''}}">
+            <li class="nav-item {{(str_contains(Route::currentRouteName(), 'idl-imun') || str_contains(Route::currentRouteName(), 'ibl-imun') || str_contains(Route::currentRouteName(), 'tt-imun') || str_contains(Route::currentRouteName(), 'bias') || str_contains(Route::currentRouteName(), 'imunisasi')) ? 'active' : ''}}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#inputData" role="button" aria-expanded="false" aria-controls="inputData">
                     <i class="link-icon" data-feather="edit"></i>
                     <span class="link-title">Input Imunisasi</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse {{(str_contains(Route::currentRouteName(), 'idl-imun') || str_contains(Route::currentRouteName(), 'ibl-imun') || str_contains(Route::currentRouteName(), 'tt-imun') || str_contains(Route::currentRouteName(), 'bias')) ? 'show' : ''}}" id="inputData">
+                <div class="collapse {{(str_contains(Route::currentRouteName(), 'idl-imun') || str_contains(Route::currentRouteName(), 'ibl-imun') || str_contains(Route::currentRouteName(), 'tt-imun') || str_contains(Route::currentRouteName(), 'bias') || str_contains(Route::currentRouteName(), 'imunisasi')) ? 'show' : ''}}" id="inputData">
                     <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="{{route('imunisasi.index')}}" class="nav-link {{str_contains(Route::currentRouteName(), 'imunisasi') ? 'active' : ''}}">Filter Imunisasi</a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{route('idl-imun.index')}}" class="nav-link {{str_contains(Route::currentRouteName(), 'idl-imun') ? 'active' : ''}}">IDL</a>
                         </li>
