@@ -16,6 +16,7 @@ class VaccineIn extends Model
         'expired_date',
         'stock',
         'date_in',
+        'vvm',
         'notes'
     ];
 

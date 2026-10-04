@@ -10,6 +10,7 @@ class VaccineOut extends Model
 
     protected $fillable = [
         'date_out',
+        'vvm',
         'id_vaccine',
         'quantity',
         'notes'

@@ -32,6 +32,7 @@ class VaccineInController extends Controller
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
             'date_in' => 'required|date',
+            'vvm' => 'required|in:A,B,C,D',
             'notes' => 'nullable|string'
         ]);
 
@@ -45,6 +46,7 @@ class VaccineInController extends Controller
                 'expired_date' => $request->expired_date,
                 'stock' => $request->quantity,
                 'date_in' => $request->date_in,
+                'vvm' => $request->vvm,
                 'notes' => $request->notes
             ]);
 
@@ -74,6 +76,7 @@ class VaccineInController extends Controller
             'price' => 'required|integer|min:0',
             'quantity' => 'required|integer|min:1',
             'date_in' => 'required|date',
+            'vvm' => 'required|in:A,B,C,D',
             'notes' => 'nullable|string'
         ]);
 
@@ -93,6 +96,7 @@ class VaccineInController extends Controller
                 'expired_date' => $request->expired_date,
                 'stock' => $request->quantity,
                 'date_in' => $request->date_in,
+                'vvm' => $request->vvm,
                 'notes' => $request->notes
             ]);
 

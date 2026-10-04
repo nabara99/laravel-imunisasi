@@ -3,6 +3,120 @@
 @push('style')
     <link rel="stylesheet" href="{{ asset('vendors/datatables.net-bs5/dataTables.bootstrap5.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}">
+    <style>
+        #vaccineOutModal .select2-selection--single {
+            height: auto;
+            border-color: var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+        }
+
+        #vaccineOutModal .select2-selection__rendered {
+            padding: .469rem 2rem .469rem .8rem;
+            color: var(--bs-body-color);
+            line-height: 1.5;
+        }
+
+        #vaccineOutModal .select2-selection__arrow {
+            height: 100%;
+        }
+
+        #vaccineOutModal .select2-container--focus .select2-selection--single,
+        #vaccineOutModal .select2-container--open .select2-selection--single {
+            border-color: var(--bs-gray-400);
+        }
+
+        #vaccineOutModal .vvm-fieldset legend {
+            float: none;
+            width: auto;
+            font-size: inherit;
+        }
+
+        .vvm-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .5rem;
+        }
+
+        .vvm-option {
+            display: flex;
+            gap: .75rem;
+            align-items: flex-start;
+            padding: .75rem;
+            margin-bottom: 0;
+            border: 1px solid var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+            background-color: var(--bs-white);
+            cursor: pointer;
+        }
+
+        .vvm-option .form-check-input {
+            flex-shrink: 0;
+            float: none;
+            margin: .2rem 0 0;
+        }
+
+        .vvm-option:hover {
+            border-color: var(--vvm-color);
+        }
+
+        .vvm-option:has(input:checked) {
+            border-color: var(--vvm-color);
+            background-color: var(--vvm-background);
+        }
+
+        .vvm-option:has(input:focus-visible) {
+            outline: 2px solid var(--bs-primary);
+            outline-offset: 2px;
+        }
+
+        .vvm-option input:checked {
+            background-color: var(--vvm-color);
+            border-color: var(--vvm-color);
+        }
+
+        .vvm-option strong,
+        .vvm-option span {
+            display: block;
+        }
+
+        .vvm-option strong {
+            font-weight: 500;
+        }
+
+        .vvm-option strong::before {
+            content: '';
+            display: inline-block;
+            width: .5rem;
+            height: .5rem;
+            margin-right: .4rem;
+            border-radius: 50%;
+            background-color: var(--vvm-color);
+            vertical-align: middle;
+        }
+
+        .vvm-option .vvm-description {
+            margin-top: .25rem;
+            color: var(--bs-secondary);
+            font-size: .812rem;
+            line-height: 1.5;
+        }
+
+        .vvm-indicator {
+            display: inline-block;
+            min-width: 2rem;
+            padding: .2rem .45rem;
+            border-radius: 3px;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        @media (max-width: 575.98px) {
+            .vvm-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 @endpush
 
 @section('main')
@@ -46,6 +160,7 @@
                                             <th>Nama Vaksin</th>
                                             <th>Kategori</th>
                                             <th>Batch</th>
+                                            <th>VVM</th>
                                             <th>Jumlah</th>
                                             <th>Keterangan</th>
                                             <th style="width: 10%">Aksi</th>
@@ -59,6 +174,25 @@
                                                 <td>{{ $vaccineOut->vaccine->vaccine_name }}</td>
                                                 <td>{{ $vaccineOut->vaccine->category->name }}</td>
                                                 <td>{{ $vaccineOut->vaccine->batch_number }}</td>
+                                                <td>
+                                                    @if ($vaccineOut->vvm)
+                                                        @php
+                                                            $vvmColors = [
+                                                                'A' => '#198754',
+                                                                'B' => '#d6a500',
+                                                                'C' => '#fd7e14',
+                                                                'D' => '#dc3545',
+                                                            ];
+                                                        @endphp
+                                                        <span class="vvm-indicator"
+                                                            style="background-color: {{ $vvmColors[$vaccineOut->vvm] }}"
+                                                            title="{{ ['A' => 'Kondisi vaksin baik, vaksin dapat digunakan', 'B' => 'Vaksin harus segera digunakan jika belum kadaluarsa', 'C' => 'Kondisi vaksin tidak baik, vaksin tidak dapat digunakan', 'D' => 'Kondisi vaksin tidak baik, vaksin tidak dapat digunakan'][$vaccineOut->vvm] }}">
+                                                            {{ $vaccineOut->vvm }}
+                                                        </span>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td>{{ number_format($vaccineOut->quantity) }}</td>
                                                 <td>{{ $vaccineOut->notes ?? '-' }}</td>
                                                 <td>
@@ -125,6 +259,32 @@
                             <input type="number" name="quantity" id="quantity" class="form-control" min="1" required>
                         </div>
 
+                        <fieldset class="vvm-fieldset mb-3">
+                            <legend class="form-label">Kondisi VVM *</legend>
+                            <div class="vvm-options">
+                                <label class="vvm-option" style="--vvm-color: #198754; --vvm-background: #f0f8f4">
+                                    <input type="radio" class="form-check-input" name="vvm" value="A" required>
+                                    <span><strong>A - Baik</strong><span class="vvm-description">Kondisi vaksin baik, vaksin dapat
+                                            digunakan.</span></span>
+                                </label>
+                                <label class="vvm-option" style="--vvm-color: #d6a500; --vvm-background: #fffbeb">
+                                    <input type="radio" class="form-check-input" name="vvm" value="B">
+                                    <span><strong>B - Segera digunakan</strong><span class="vvm-description">Vaksin harus segera digunakan jika
+                                            belum kadaluarsa.</span></span>
+                                </label>
+                                <label class="vvm-option" style="--vvm-color: #fd7e14; --vvm-background: #fff5ed">
+                                    <input type="radio" class="form-check-input" name="vvm" value="C">
+                                    <span><strong>C - Tidak baik</strong><span class="vvm-description">Kondisi vaksin tidak baik, vaksin tidak dapat
+                                            digunakan.</span></span>
+                                </label>
+                                <label class="vvm-option" style="--vvm-color: #dc3545; --vvm-background: #fdf1f2">
+                                    <input type="radio" class="form-check-input" name="vvm" value="D">
+                                    <span><strong>D - Tidak baik</strong><span class="vvm-description">Kondisi vaksin tidak baik, vaksin tidak dapat
+                                            digunakan.</span></span>
+                                </label>
+                            </div>
+                        </fieldset>
+
                         <div class="mb-3">
                             <label for="notes" class="form-label">Keterangan</label>
                             <textarea name="notes" id="notes" class="form-control" rows="3"
@@ -146,6 +306,7 @@
     <script src="{{ asset('vendors/datatables.net/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('vendors/datatables.net-bs5/dataTables.bootstrap5.js') }}"></script>
     <script src="{{ asset('js/data-table.js') }}"></script>
+    <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 
     <script>
         function resetForm() {
@@ -157,6 +318,7 @@
             // Show vaccine select and make it required
             document.getElementById('vaccineSelectField').style.display = 'block';
             document.getElementById('id_vaccine').required = true;
+            $('#id_vaccine').val('').trigger('change');
 
             document.getElementById('date_out').value = new Date().toISOString().split('T')[0];
             document.getElementById('stockInfo').textContent = '';
@@ -166,6 +328,9 @@
             document.getElementById('date_out').value = vaccineOut.date_out.split('T')[0];
             document.getElementById('quantity').value = vaccineOut.quantity;
             document.getElementById('notes').value = vaccineOut.notes || '';
+            document.querySelectorAll('#vaccineOutForm input[name="vvm"]').forEach(input => {
+                input.checked = input.value === vaccineOut.vvm;
+            });
 
             // Hide vaccine select on edit and remove required attribute
             document.getElementById('vaccineSelectField').style.display = 'none';
@@ -180,17 +345,36 @@
         }
 
         // Show stock info when vaccine is selected
-        document.getElementById('id_vaccine').addEventListener('change', function() {
+        $('#id_vaccine').on('change', function() {
             const selectedOption = this.options[this.selectedIndex];
             const stock = selectedOption.getAttribute('data-stock');
             if (stock) {
                 document.getElementById('stockInfo').textContent = `Stok tersedia: ${stock}`;
                 document.getElementById('quantity').max = stock;
+            } else {
+                document.getElementById('stockInfo').textContent = '';
+                document.getElementById('quantity').removeAttribute('max');
             }
         });
 
         // Set default date to today
         document.addEventListener('DOMContentLoaded', function() {
+            $('#id_vaccine').select2({
+                dropdownParent: $('#vaccineOutModal'),
+                width: '100%',
+                placeholder: 'Pilih Vaksin',
+                minimumResultsForSearch: 0,
+                language: {
+                    noResults: function() {
+                        return 'Vaksin tidak ditemukan';
+                    }
+                }
+            }).on('select2:open', function() {
+                $('#vaccineOutModal .select2-search__field')
+                    .attr('placeholder', 'Cari nama vaksin atau nomor batch')
+                    .attr('aria-label', 'Cari nama vaksin atau nomor batch')
+                    .trigger('focus');
+            });
             document.getElementById('date_out').value = new Date().toISOString().split('T')[0];
         });
     </script>

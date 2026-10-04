@@ -24,6 +24,7 @@ class VaccineOutController extends Controller
     {
         $request->validate([
             'date_out' => 'required|date',
+            'vvm' => 'required|in:A,B,C,D',
             'id_vaccine' => 'required|exists:vaccines,id',
             'quantity' => 'required|integer|min:1',
             'notes' => 'nullable|string'
@@ -41,6 +42,7 @@ class VaccineOutController extends Controller
                 // Create vaccine out record
                 VaccineOut::create([
                     'date_out' => $request->date_out,
+                    'vvm' => $request->vvm,
                     'id_vaccine' => $request->id_vaccine,
                     'quantity' => $request->quantity,
                     'notes' => $request->notes
@@ -63,6 +65,7 @@ class VaccineOutController extends Controller
         $request->validate([
             'quantity' => 'required|integer|min:1',
             'date_out' => 'required|date',
+            'vvm' => 'required|in:A,B,C,D',
             'notes' => 'nullable|string'
         ]);
 
@@ -82,6 +85,7 @@ class VaccineOutController extends Controller
                 // Update vaccine out
                 $vaccineOut->update([
                     'date_out' => $request->date_out,
+                    'vvm' => $request->vvm,
                     'quantity' => $newQuantity,
                     'notes' => $request->notes
                 ]);

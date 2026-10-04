@@ -9,10 +9,6 @@
                     <p class="text-muted">Monitoring Capaian Program Imunisasi</p>
                 </div>
                 <div class="d-flex align-items-center flex-wrap text-nowrap">
-                    <button type="button" class="btn btn-outline-primary btn-icon-text me-2 mb-2 mb-md-0" onclick="window.print()">
-                        <i class="btn-icon-prepend" data-feather="printer"></i>
-                        Print
-                    </button>
                     <a href="{{ route('report.index') }}" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
                         <i class="btn-icon-prepend" data-feather="file-text"></i>
                         Lihat Laporan
