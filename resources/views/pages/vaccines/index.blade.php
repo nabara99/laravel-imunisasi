@@ -38,6 +38,7 @@
                                             <th>Nama Vaksin</th>
                                             <th>Kategori</th>
                                             <th>Batch</th>
+                                            <th>VVM</th>
                                             <th>Expired</th>
                                             <th>Harga</th>
                                             <th>Stok</th>
@@ -45,6 +46,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $vvmColors = [
+                                                'A' => '#198754',
+                                                'B' => '#d6a500',
+                                                'C' => '#fd7e14',
+                                                'D' => '#dc3545',
+                                            ];
+                                            $vvmDescriptions = [
+                                                'A' => 'Kondisi vaksin baik, vaksin dapat digunakan',
+                                                'B' => 'Vaksin harus segera digunakan jika belum kadaluarsa',
+                                                'C' => 'Kondisi vaksin tidak baik, vaksin tidak dapat digunakan',
+                                                'D' => 'Kondisi vaksin tidak baik, vaksin tidak dapat digunakan',
+                                            ];
+                                        @endphp
                                         @foreach ($vaccines as $index => $vaccine)
                                             @php
                                                 $isExpired = $vaccine->expired_date->isPast();
@@ -55,6 +70,17 @@
                                                 <td>{{ $vaccine->vaccine_name }}</td>
                                                 <td>{{ $vaccine->category->name }}</td>
                                                 <td>{{ $vaccine->batch_number }}</td>
+                                                <td>
+                                                    @if ($vaccine->vvm)
+                                                        <span class="badge"
+                                                            style="background-color: {{ $vvmColors[$vaccine->vvm] }}"
+                                                            title="{{ $vvmDescriptions[$vaccine->vvm] }}">
+                                                            {{ $vaccine->vvm }}
+                                                        </span>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if($isExpired)
                                                         <span class="badge bg-danger">{{ $vaccine->expired_date->format('d/m/Y') }}</span>

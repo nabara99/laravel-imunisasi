@@ -53,6 +53,7 @@
                 <th rowspan="2">Nama Vaksin</th>
                 <th rowspan="2">Kategori</th>
                 <th rowspan="2">Batch</th>
+                <th rowspan="2">VVM</th>
                 <th rowspan="2">Expired</th>
                 <th colspan="2">Penerimaan</th>
                 <th rowspan="2">Keterangan</th>
@@ -70,6 +71,7 @@
                     <td style="text-align: left">{{ $vaccineIn->vaccine_name }}</td>
                     <td>{{ $vaccineIn->category->name }}</td>
                     <td>{{ $vaccineIn->batch_number }}</td>
+                    <td>{{ $vaccineIn->vvm ?? '-' }}</td>
                     <td>{{ $vaccineIn->expired_date->format('d/m/Y') }}</td>
                     <td>{{ number_format($vaccineIn->stock) }}</td>
                     <td style="text-align: right">{{ number_format($vaccineIn->stock * $vaccineIn->price) }}
@@ -80,7 +82,7 @@
         </tbody>
         <tfoot>
             <tr style="font-weight: bold; background-color: #f0f0f0">
-                <td colspan="6">TOTAL</td>
+                <td colspan="7">TOTAL</td>
                 <td>{{ number_format($summary['total_quantity']) }}</td>
                 <td style="text-align: right">{{ number_format($summary['total_value']) }}</td>
                 <td></td>

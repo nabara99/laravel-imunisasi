@@ -31,7 +31,7 @@ class VaccineReportController extends Controller
         $endDate = $request->end_date;
         $vaccineId = $request->id_vaccine;
 
-        $query = Vaccine::with('category');
+        $query = Vaccine::with('category')->withVvm();
 
         if ($vaccineId) {
             $query->where('id', $vaccineId);

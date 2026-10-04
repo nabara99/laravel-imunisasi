@@ -52,6 +52,7 @@
                 <th rowspan="2">Nama Vaksin</th>
                 <th rowspan="2">Kategori</th>
                 <th rowspan="2">Batch</th>
+                <th rowspan="2">VVM</th>
                 <th rowspan="2">Expired</th>
                 <th rowspan="2">Harga (Rp)</th>
                 <th colspan="2">Periode</th>
@@ -89,6 +90,7 @@
                     <td style="text-align: left">{{ $vaccine->vaccine_name }}</td>
                     <td>{{ $vaccine->category->name }}</td>
                     <td>{{ $vaccine->batch_number }}</td>
+                    <td>{{ $vaccine->vvm ?? '-' }}</td>
                     <td>{{ $vaccine->expired_date->format('d/m/Y') }}</td>
                     <td style="text-align: right">{{ number_format($vaccine->price) }}</td>
                     <td>{{ number_format($vaccine->total_in) }}</td>
@@ -100,7 +102,7 @@
         </tbody>
         <tfoot>
             <tr style="font-weight: bold; background-color: #f0f0f0">
-                <td colspan="6">TOTAL</td>
+                <td colspan="7">TOTAL</td>
                 <td>{{ number_format($vaccines->sum('total_in')) }}</td>
                 <td>{{ number_format($vaccines->sum('total_out')) }}</td>
                 <td>{{ number_format($vaccines->sum('current_stock')) }}</td>

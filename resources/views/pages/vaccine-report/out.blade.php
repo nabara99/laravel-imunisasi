@@ -53,6 +53,7 @@
                 <th rowspan="2">Nama Vaksin</th>
                 <th rowspan="2">Kategori</th>
                 <th rowspan="2">Batch</th>
+                <th rowspan="2">VVM</th>
                 <th colspan="2">Pengeluaran</th>
                 <th rowspan="2">Keterangan</th>
             </tr>
@@ -69,6 +70,7 @@
                     <td style="text-align: left">{{ $vaccineOut->vaccine->vaccine_name }}</td>
                     <td>{{ $vaccineOut->vaccine->category->name }}</td>
                     <td>{{ $vaccineOut->vaccine->batch_number }}</td>
+                    <td>{{ $vaccineOut->vvm ?? '-' }}</td>
                     <td>{{ number_format($vaccineOut->quantity) }}</td>
                     <td style="text-align: right">{{ number_format($vaccineOut->quantity * $vaccineOut->vaccine->price) }}
                     </td>
@@ -78,7 +80,7 @@
         </tbody>
         <tfoot>
             <tr style="font-weight: bold; background-color: #f0f0f0">
-                <td colspan="5">TOTAL</td>
+                <td colspan="6">TOTAL</td>
                 <td>{{ number_format($summary['total_quantity']) }}</td>
                 <td style="text-align: right">{{ number_format($summary['total_value']) }}</td>
                 <td></td>

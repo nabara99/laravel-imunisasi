@@ -10,6 +10,7 @@ class VaccineController extends Controller
     public function index()
     {
         $vaccines = Vaccine::with('category')
+            ->withVvm()
             ->orderBy('vaccine_name')
             ->get();
 

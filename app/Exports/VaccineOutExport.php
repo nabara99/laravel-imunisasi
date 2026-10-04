@@ -61,19 +61,19 @@ class VaccineOutExport
 
         // Title
         $sheet->setCellValue('A' . $currentRow, 'LAPORAN PENGELUARAN VAKSIN');
-        $sheet->mergeCells('A' . $currentRow . ':H' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':I' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PUSKESMAS GIRI MULYA');
-        $sheet->mergeCells('A' . $currentRow . ':H' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':I' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PERIODE ' . date('j F Y', strtotime($this->startDate)) . ' s.d ' . date('j F Y', strtotime($this->endDate)));
-        $sheet->mergeCells('A' . $currentRow . ':H' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':I' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow += 2;
@@ -84,9 +84,10 @@ class VaccineOutExport
         $sheet->setCellValue('C' . $currentRow, 'Nama Vaksin');
         $sheet->setCellValue('D' . $currentRow, 'Kategori');
         $sheet->setCellValue('E' . $currentRow, 'Batch');
-        $sheet->setCellValue('F' . $currentRow, 'Pengeluaran');
-        $sheet->mergeCells('F' . $currentRow . ':G' . $currentRow);
-        $sheet->setCellValue('H' . $currentRow, 'Keterangan');
+        $sheet->setCellValue('F' . $currentRow, 'VVM');
+        $sheet->setCellValue('G' . $currentRow, 'Pengeluaran');
+        $sheet->mergeCells('G' . $currentRow . ':H' . $currentRow);
+        $sheet->setCellValue('I' . $currentRow, 'Keterangan');
 
         // Merge cells for main headers
         $sheet->mergeCells('A' . $currentRow . ':A' . ($currentRow + 1));
@@ -94,15 +95,16 @@ class VaccineOutExport
         $sheet->mergeCells('C' . $currentRow . ':C' . ($currentRow + 1));
         $sheet->mergeCells('D' . $currentRow . ':D' . ($currentRow + 1));
         $sheet->mergeCells('E' . $currentRow . ':E' . ($currentRow + 1));
-        $sheet->mergeCells('H' . $currentRow . ':H' . ($currentRow + 1));
+        $sheet->mergeCells('F' . $currentRow . ':F' . ($currentRow + 1));
+        $sheet->mergeCells('I' . $currentRow . ':I' . ($currentRow + 1));
 
         $currentRow++;
 
         // Headers - Row 2 (Sub-headers for Pengeluaran)
-        $sheet->setCellValue('F' . $currentRow, 'Jumlah');
-        $sheet->setCellValue('G' . $currentRow, 'Nilai (Rp)');
+        $sheet->setCellValue('G' . $currentRow, 'Jumlah');
+        $sheet->setCellValue('H' . $currentRow, 'Nilai (Rp)');
 
-        $sheet->getStyle('A' . ($currentRow - 1) . ':H' . $currentRow)->applyFromArray($headerStyle);
+        $sheet->getStyle('A' . ($currentRow - 1) . ':I' . $currentRow)->applyFromArray($headerStyle);
         $currentRow++;
 
         $startDataRow = $currentRow;
@@ -115,28 +117,30 @@ class VaccineOutExport
             $sheet->setCellValue('C' . $currentRow, $vaccineOut->vaccine->vaccine_name ?? '-');
             $sheet->setCellValue('D' . $currentRow, $vaccineOut->vaccine->category->name ?? '-');
             $sheet->setCellValue('E' . $currentRow, $vaccineOut->vaccine->batch_number ?? '-');
-            $sheet->setCellValue('F' . $currentRow, $vaccineOut->quantity);
+            $sheet->setCellValue('F' . $currentRow, $vaccineOut->vvm ?? '-');
+            $sheet->getStyle('F' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->setCellValue('G' . $currentRow, $vaccineOut->quantity);
             $vaccinePrice = $vaccineOut->vaccine ? $vaccineOut->vaccine->price : 0;
-            $sheet->setCellValue('G' . $currentRow, number_format($vaccineOut->quantity * $vaccinePrice, 0, ',', '.'));
-            $sheet->setCellValue('H' . $currentRow, $vaccineOut->notes ?? '-');
+            $sheet->setCellValue('H' . $currentRow, number_format($vaccineOut->quantity * $vaccinePrice, 0, ',', '.'));
+            $sheet->setCellValue('I' . $currentRow, $vaccineOut->notes ?? '-');
 
             // Align right for numeric columns
-            $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
             $sheet->getStyle('C' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle('I' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $currentRow++;
         }
 
         // Total row
         $sheet->setCellValue('A' . $currentRow, 'TOTAL');
-        $sheet->mergeCells('A' . $currentRow . ':E' . $currentRow);
-        $sheet->setCellValue('F' . $currentRow, $this->summary['total_quantity']);
-        $sheet->setCellValue('G' . $currentRow, number_format($this->summary['total_value'], 0, ',', '.'));
-        $sheet->setCellValue('H' . $currentRow, '');
+        $sheet->mergeCells('A' . $currentRow . ':F' . $currentRow);
+        $sheet->setCellValue('G' . $currentRow, $this->summary['total_quantity']);
+        $sheet->setCellValue('H' . $currentRow, number_format($this->summary['total_value'], 0, ',', '.'));
+        $sheet->setCellValue('I' . $currentRow, '');
 
-        $sheet->getStyle('A' . $currentRow . ':H' . $currentRow)->getFont()->setBold(true);
-        $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->getStyle('A' . $startDataRow . ':H' . $currentRow)->applyFromArray([
+        $sheet->getStyle('A' . $currentRow . ':I' . $currentRow)->getFont()->setBold(true);
+        $sheet->getStyle('H' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('A' . $startDataRow . ':I' . $currentRow)->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
         ]);
 
@@ -155,7 +159,7 @@ class VaccineOutExport
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
 
         // Auto size columns
-        foreach (range('A', 'H') as $col) {
+        foreach (range('A', 'I') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
