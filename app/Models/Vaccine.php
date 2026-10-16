@@ -40,6 +40,29 @@ class Vaccine extends Model
         return $this->belongsTo(VaccineCategory::class, 'id_category_vaccine');
     }
 
+    public function getIsExpiredAttribute(): bool
+    {
+        return $this->expired_date->lt(today());
+    }
+
+    public function getIsExpiringSoonAttribute(): bool
+    {
+        return !$this->is_expired && $this->expired_date->lte(today()->addDays(30));
+    }
+
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->is_expired) {
+            return 'Kadaluarsa';
+        }
+
+        if ($this->is_expiring_soon) {
+            return 'Segera Kadaluarsa';
+        }
+
+        return $this->stock == 0 ? 'Habis' : 'Tersedia';
+    }
+
     public function vaccineOuts()
     {
         return $this->hasMany(VaccineOut::class, 'id_vaccine');

@@ -8,15 +8,17 @@ use App\Exports\VaccineStockExport;
 use App\Models\Vaccine;
 use App\Models\VaccineIn;
 use App\Models\VaccineOut;
+use App\Services\VaccineStockReport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class VaccineReportController extends Controller
 {
     public function index()
     {
-        $vaccines = VaccineIn::with('category')->orderBy('vaccine_name')->get();
-        return view('pages.vaccine-report.index', compact('vaccines'));
+        $vaccineIns = VaccineIn::orderBy('vaccine_name')->get();
+        $vaccines = Vaccine::orderBy('vaccine_name')->get();
+
+        return view('pages.vaccine-report.index', compact('vaccineIns', 'vaccines'));
     }
 
     public function reportStock(Request $request)
@@ -31,30 +33,7 @@ class VaccineReportController extends Controller
         $endDate = $request->end_date;
         $vaccineId = $request->id_vaccine;
 
-        $query = Vaccine::with('category')->withVvm();
-
-        if ($vaccineId) {
-            $query->where('id', $vaccineId);
-        }
-
-        $vaccines = $query->get()->map(function ($vaccine) use ($startDate, $endDate) {
-            // Hitung total masuk dalam periode
-            $totalIn = VaccineIn::where('vaccine_name', $vaccine->vaccine_name)
-                ->where('batch_number', $vaccine->batch_number)
-                ->whereBetween('date_in', [$startDate, $endDate])
-                ->sum('stock');
-
-            // Hitung total keluar dalam periode
-            $totalOut = VaccineOut::where('id_vaccine', $vaccine->id)
-                ->whereBetween('date_out', [$startDate, $endDate])
-                ->sum('quantity');
-
-            $vaccine->total_in = $totalIn;
-            $vaccine->total_out = $totalOut;
-            $vaccine->current_stock = $vaccine->stock;
-
-            return $vaccine;
-        });
+        $vaccines = app(VaccineStockReport::class)->get($startDate, $endDate, $vaccineId);
 
         return view('pages.vaccine-report.stock', compact('vaccines', 'startDate', 'endDate'));
     }

@@ -2,7 +2,14 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <title>Laporan Stok Vaksin</title>
     <style>
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -55,7 +62,9 @@
                 <th rowspan="2">VVM</th>
                 <th rowspan="2">Expired</th>
                 <th rowspan="2">Harga (Rp)</th>
+                <th rowspan="2">Saldo Awal</th>
                 <th colspan="2">Periode</th>
+                <th rowspan="2">Saldo Akhir</th>
                 <th rowspan="2">Stok Saat Ini</th>
                 <th rowspan="2">Status</th>
             </tr>
@@ -70,41 +79,33 @@
             @endphp
             @foreach ($vaccines as $index => $vaccine)
                 @php
-                    $isExpired = $vaccine->expired_date->isPast();
-                    $isExpiringSoon = $vaccine->expired_date->diffInDays(now()) <= 30 && !$isExpired;
                     $stockValue = $vaccine->stock * $vaccine->price;
                     $totalStockValue += $stockValue;
-
-                    if ($isExpired) {
-                        $status = 'Kadaluarsa';
-                    } elseif ($isExpiringSoon) {
-                        $status = 'Segera Kadaluarsa';
-                    } elseif ($vaccine->stock == 0) {
-                        $status = 'Habis';
-                    } else {
-                        $status = 'Tersedia';
-                    }
                 @endphp
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td style="text-align: left">{{ $vaccine->vaccine_name }}</td>
-                    <td>{{ $vaccine->category->name }}</td>
+                    <td>{{ $vaccine->category->name ?? '-' }}</td>
                     <td>{{ $vaccine->batch_number }}</td>
                     <td>{{ $vaccine->vvm ?? '-' }}</td>
                     <td>{{ $vaccine->expired_date->format('d/m/Y') }}</td>
                     <td style="text-align: right">{{ number_format($vaccine->price) }}</td>
+                    <td>{{ number_format($vaccine->opening_stock) }}</td>
                     <td>{{ number_format($vaccine->total_in) }}</td>
                     <td>{{ number_format($vaccine->total_out) }}</td>
+                    <td>{{ number_format($vaccine->closing_stock) }}</td>
                     <td>{{ number_format($vaccine->current_stock) }}</td>
-                    <td>{{ $status }}</td>
+                    <td>{{ $vaccine->stock_status }}</td>
                 </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr style="font-weight: bold; background-color: #f0f0f0">
                 <td colspan="7">TOTAL</td>
+                <td>{{ number_format($vaccines->sum('opening_stock')) }}</td>
                 <td>{{ number_format($vaccines->sum('total_in')) }}</td>
                 <td>{{ number_format($vaccines->sum('total_out')) }}</td>
+                <td>{{ number_format($vaccines->sum('closing_stock')) }}</td>
                 <td>{{ number_format($vaccines->sum('current_stock')) }}</td>
                 <td></td>
             </tr>
@@ -115,9 +116,14 @@
         <p>Total Jenis Vaksin: {{ $vaccines->count() }} jenis</p>
         <p>Total Stok: {{ number_format($vaccines->sum('current_stock')) }} unit</p>
         <p>Total Nilai Stok: Rp {{ number_format($totalStockValue) }}</p>
+        <p>Saldo Awal: {{ number_format($vaccines->sum('opening_stock')) }} unit</p>
         <p>Periode Transaksi Masuk: {{ number_format($vaccines->sum('total_in')) }} unit</p>
         <p>Periode Transaksi Keluar: {{ number_format($vaccines->sum('total_out')) }} unit</p>
+        <p>Saldo Akhir: {{ number_format($vaccines->sum('closing_stock')) }} unit</p>
     </div>
+    <p>Saldo awal adalah seluruh penerimaan dikurangi pengeluaran sebelum tanggal awal periode.
+        Saldo akhir = saldo awal + masuk periode − keluar periode. Stok saat ini dapat berbeda jika ada transaksi setelah periode.
+        Penerimaan berulang dengan nama, kategori, batch, kedaluwarsa, dan harga yang sama digabung agar tidak dihitung ganda.</p>
 </body>
 
 </html>

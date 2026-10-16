@@ -62,8 +62,8 @@
                                         @endphp
                                         @foreach ($vaccines as $index => $vaccine)
                                             @php
-                                                $isExpired = $vaccine->expired_date->isPast();
-                                                $isExpiringSoon = $vaccine->expired_date->diffInDays(now()) <= 30 && !$isExpired;
+                                                $isExpired = $vaccine->is_expired;
+                                                $isExpiringSoon = $vaccine->is_expiring_soon;
                                             @endphp
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>

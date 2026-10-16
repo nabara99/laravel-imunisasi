@@ -66,7 +66,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const alertElement = document.querySelector('.alert');
-            const progressBar = alertElement.querySelector('.progress-bar');
+            const progressBar = alertElement?.querySelector('.progress-bar');
             const alertDuration = 2000;
 
             if (alertElement && progressBar) {

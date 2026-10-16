@@ -2,9 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\Vaccine;
-use App\Models\VaccineIn;
-use App\Models\VaccineOut;
+use App\Services\VaccineStockReport;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -28,30 +27,7 @@ class VaccineStockExport
 
     protected function fetchData()
     {
-        $query = Vaccine::with('category')->withVvm();
-
-        if ($this->vaccineId) {
-            $query->where('id', $this->vaccineId);
-        }
-
-        $this->vaccines = $query->get()->map(function ($vaccine) {
-            // Hitung total masuk dalam periode
-            $totalIn = VaccineIn::where('vaccine_name', $vaccine->vaccine_name)
-                ->where('batch_number', $vaccine->batch_number)
-                ->whereBetween('date_in', [$this->startDate, $this->endDate])
-                ->sum('stock');
-
-            // Hitung total keluar dalam periode
-            $totalOut = VaccineOut::where('id_vaccine', $vaccine->id)
-                ->whereBetween('date_out', [$this->startDate, $this->endDate])
-                ->sum('quantity');
-
-            $vaccine->total_in = $totalIn;
-            $vaccine->total_out = $totalOut;
-            $vaccine->current_stock = $vaccine->stock;
-
-            return $vaccine;
-        });
+        $this->vaccines = app(VaccineStockReport::class)->get($this->startDate, $this->endDate, $this->vaccineId);
     }
 
     public function download()
@@ -70,19 +46,19 @@ class VaccineStockExport
 
         // Title
         $sheet->setCellValue('A' . $currentRow, 'LAPORAN STOK VAKSIN');
-        $sheet->mergeCells('A' . $currentRow . ':K' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PUSKESMAS GIRI MULYA');
-        $sheet->mergeCells('A' . $currentRow . ':K' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PERIODE ' . date('j F Y', strtotime($this->startDate)) . ' s.d ' . date('j F Y', strtotime($this->endDate)));
-        $sheet->mergeCells('A' . $currentRow . ':K' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow += 2;
@@ -95,10 +71,12 @@ class VaccineStockExport
         $sheet->setCellValue('E' . $currentRow, 'VVM');
         $sheet->setCellValue('F' . $currentRow, 'Expired');
         $sheet->setCellValue('G' . $currentRow, 'Harga (Rp)');
-        $sheet->setCellValue('H' . $currentRow, 'Periode');
-        $sheet->mergeCells('H' . $currentRow . ':I' . $currentRow);
-        $sheet->setCellValue('J' . $currentRow, 'Stok Saat Ini');
-        $sheet->setCellValue('K' . $currentRow, 'Status');
+        $sheet->setCellValue('H' . $currentRow, 'Saldo Awal');
+        $sheet->setCellValue('I' . $currentRow, 'Periode');
+        $sheet->mergeCells('I' . $currentRow . ':J' . $currentRow);
+        $sheet->setCellValue('K' . $currentRow, 'Saldo Akhir');
+        $sheet->setCellValue('L' . $currentRow, 'Stok Saat Ini');
+        $sheet->setCellValue('M' . $currentRow, 'Status');
 
         // Merge cells for main headers
         $sheet->mergeCells('A' . $currentRow . ':A' . ($currentRow + 1));
@@ -108,16 +86,18 @@ class VaccineStockExport
         $sheet->mergeCells('E' . $currentRow . ':E' . ($currentRow + 1));
         $sheet->mergeCells('F' . $currentRow . ':F' . ($currentRow + 1));
         $sheet->mergeCells('G' . $currentRow . ':G' . ($currentRow + 1));
-        $sheet->mergeCells('J' . $currentRow . ':J' . ($currentRow + 1));
+        $sheet->mergeCells('H' . $currentRow . ':H' . ($currentRow + 1));
         $sheet->mergeCells('K' . $currentRow . ':K' . ($currentRow + 1));
+        $sheet->mergeCells('L' . $currentRow . ':L' . ($currentRow + 1));
+        $sheet->mergeCells('M' . $currentRow . ':M' . ($currentRow + 1));
 
         $currentRow++;
 
         // Headers - Row 2 (Sub-headers for Periode)
-        $sheet->setCellValue('H' . $currentRow, 'Masuk');
-        $sheet->setCellValue('I' . $currentRow, 'Keluar');
+        $sheet->setCellValue('I' . $currentRow, 'Masuk');
+        $sheet->setCellValue('J' . $currentRow, 'Keluar');
 
-        $sheet->getStyle('A' . ($currentRow - 1) . ':K' . $currentRow)->applyFromArray($headerStyle);
+        $sheet->getStyle('A' . ($currentRow - 1) . ':M' . $currentRow)->applyFromArray($headerStyle);
         $currentRow++;
 
         $startDataRow = $currentRow;
@@ -126,36 +106,23 @@ class VaccineStockExport
 
         // Data
         foreach ($this->vaccines as $vaccine) {
-            // Determine status
-            $isExpired = strtotime($vaccine->expired_date) < time();
-            $daysUntilExpiry = (strtotime($vaccine->expired_date) - time()) / (60 * 60 * 24);
-            $isExpiringSoon = $daysUntilExpiry <= 30 && !$isExpired;
-
-            if ($isExpired) {
-                $status = 'Kadaluarsa';
-            } elseif ($isExpiringSoon) {
-                $status = 'Segera Kadaluarsa';
-            } elseif ($vaccine->stock == 0) {
-                $status = 'Habis';
-            } else {
-                $status = 'Tersedia';
-            }
-
             $stockValue = $vaccine->stock * $vaccine->price;
             $totalStockValue += $stockValue;
 
             $sheet->setCellValue('A' . $currentRow, $no++);
             $sheet->setCellValue('B' . $currentRow, $vaccine->vaccine_name);
             $sheet->setCellValue('C' . $currentRow, $vaccine->category->name ?? '-');
-            $sheet->setCellValue('D' . $currentRow, $vaccine->batch_number);
+            $sheet->setCellValueExplicit('D' . $currentRow, $vaccine->batch_number, DataType::TYPE_STRING);
             $sheet->setCellValue('E' . $currentRow, $vaccine->vvm ?? '-');
             $sheet->getStyle('E' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('F' . $currentRow, date('d/m/Y', strtotime($vaccine->expired_date)));
             $sheet->setCellValue('G' . $currentRow, number_format($vaccine->price, 0, ',', '.'));
-            $sheet->setCellValue('H' . $currentRow, $vaccine->total_in);
-            $sheet->setCellValue('I' . $currentRow, $vaccine->total_out);
-            $sheet->setCellValue('J' . $currentRow, $vaccine->current_stock);
-            $sheet->setCellValue('K' . $currentRow, $status);
+            $sheet->setCellValue('H' . $currentRow, $vaccine->opening_stock);
+            $sheet->setCellValue('I' . $currentRow, $vaccine->total_in);
+            $sheet->setCellValue('J' . $currentRow, $vaccine->total_out);
+            $sheet->setCellValue('K' . $currentRow, $vaccine->closing_stock);
+            $sheet->setCellValue('L' . $currentRow, $vaccine->current_stock);
+            $sheet->setCellValue('M' . $currentRow, $vaccine->stock_status);
 
             // Align right for numeric columns
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
@@ -169,13 +136,15 @@ class VaccineStockExport
 
         $sheet->setCellValue('A' . $currentRow, 'TOTAL');
         $sheet->mergeCells('A' . $currentRow . ':G' . $currentRow);
-        $sheet->setCellValue('H' . $currentRow, $totalIn);
-        $sheet->setCellValue('I' . $currentRow, $totalOut);
-        $sheet->setCellValue('J' . $currentRow, $totalStock);
-        $sheet->setCellValue('K' . $currentRow, '');
+        $sheet->setCellValue('H' . $currentRow, $this->vaccines->sum('opening_stock'));
+        $sheet->setCellValue('I' . $currentRow, $totalIn);
+        $sheet->setCellValue('J' . $currentRow, $totalOut);
+        $sheet->setCellValue('K' . $currentRow, $this->vaccines->sum('closing_stock'));
+        $sheet->setCellValue('L' . $currentRow, $totalStock);
+        $sheet->setCellValue('M' . $currentRow, '');
 
-        $sheet->getStyle('A' . $currentRow . ':K' . $currentRow)->getFont()->setBold(true);
-        $sheet->getStyle('A' . $startDataRow . ':K' . $currentRow)->applyFromArray([
+        $sheet->getStyle('A' . $currentRow . ':M' . $currentRow)->getFont()->setBold(true);
+        $sheet->getStyle('A' . $startDataRow . ':M' . $currentRow)->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
         ]);
 
@@ -200,21 +169,28 @@ class VaccineStockExport
 
         $sheet->setCellValue('A' . $currentRow, 'Periode Transaksi Keluar: ' . number_format($totalOut) . ' unit');
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
+        $currentRow++;
+
+        $sheet->setCellValue('A' . $currentRow, 'Saldo Awal: ' . number_format($this->vaccines->sum('opening_stock')) . ' unit');
+        $currentRow++;
+        $sheet->setCellValue('A' . $currentRow, 'Saldo Akhir: ' . number_format($this->vaccines->sum('closing_stock')) . ' unit');
+        $currentRow += 2;
+        $sheet->setCellValue('A' . $currentRow, 'Saldo awal mencakup penerimaan dan pengeluaran sebelum periode. Saldo akhir = saldo awal + masuk periode - keluar periode.');
+        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
+        $sheet->getStyle('A' . $currentRow)->getAlignment()->setWrapText(true);
 
         // Auto size columns
-        foreach (range('A', 'K') as $col) {
+        foreach (range('A', 'M') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
         // Download
         $filename = 'Laporan_Stok_Vaksin_' . date('Y-m-d', strtotime($this->startDate)) . '_to_' . date('Y-m-d', strtotime($this->endDate)) . '.xlsx';
 
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-        exit;
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }
