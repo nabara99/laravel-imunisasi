@@ -4,6 +4,19 @@
     </a>
     <div class="navbar-content">
         <ul class="navbar-nav">
+            @if (request()->routeIs('dashboard'))
+                <li class="nav-item d-flex align-items-center me-3">
+                    <form id="dashboard-year-form" action="{{ route('dashboard') }}" method="GET" class="d-flex align-items-center gap-2">
+                        <label for="dashboard-year" class="mb-0">Tahun</label>
+                        <select id="dashboard-year" name="year" class="form-select form-select-sm" style="width: 90px;">
+                            @foreach ($dashboardYears as $availableYear)
+                                <option value="{{ $availableYear }}" @selected($dashboardYear === $availableYear)>{{ $availableYear }}</option>
+                            @endforeach
+                        </select>
+                        <noscript><button type="submit" class="btn btn-sm btn-primary">Terapkan</button></noscript>
+                    </form>
+                </li>
+            @endif
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

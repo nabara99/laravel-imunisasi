@@ -6,7 +6,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
                 <div>
                     <h4 class="mb-3 mb-md-0">Dashboard Sistem Imunisasi</h4>
-                    <p class="text-muted">Monitoring Capaian Program Imunisasi</p>
+                    <p class="text-muted">Monitoring Capaian Program Imunisasi Tahun {{ $dashboardYear }}</p>
                 </div>
                 <div class="d-flex align-items-center flex-wrap text-nowrap">
                     <a href="{{ route('report.index') }}" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
@@ -213,7 +213,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline mb-3">
-                                <h5 class="card-title mb-0">Ringkasan Capaian Imunisasi</h5>
+                                <h5 class="card-title mb-0">Ringkasan Capaian Imunisasi Tahun {{ $dashboardYear }}</h5>
                                 <a href="{{ route('report.index') }}" class="btn btn-sm btn-primary">
                                     <i data-feather="file-text" class="icon-sm me-1"></i>
                                     Unduh Laporan Lengkap
@@ -225,7 +225,7 @@
                                     <div class="alert alert-primary d-flex align-items-center" role="alert">
                                         <i data-feather="info" class="me-2"></i>
                                         <div>
-                                            <strong>Informasi:</strong> Sistem ini mengelola 4 program imunisasi utama dengan total
+                                            <strong>Informasi Tahun {{ $dashboardYear }}:</strong> Sistem ini mengelola 4 program imunisasi utama dengan total
                                             <strong>{{ number_format($idlTargetTotal + $iblTargetTotal + $wusTargetTotal + $biasTargetTotal) }}</strong> sasaran
                                             dan telah mencapai <strong>{{ number_format($idlAchievement + $iblAchievement + $ttAchievement + $biasAchievement) }}</strong> capaian imunisasi.
                                         </div>
@@ -234,7 +234,7 @@
                             </div>
 
                             <div class="table-responsive mt-3">
-                                <table class="table table-hover">
+                                <table id="dashboard-summary-table" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Program</th>
@@ -304,6 +304,10 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <p class="text-muted tx-12 mt-3 mb-0">
+                                Capaian IDL/IBL berdasarkan status lengkap dan tanggal MR1/MR2 pada tahun {{ $dashboardYear }}.
+                                Capaian TT WUS dan BIAS menghitung penerima unik yang mendapat imunisasi pada tahun tersebut.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -312,3 +316,11 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.getElementById('dashboard-year').addEventListener('change', function() {
+            this.form.requestSubmit();
+        });
+    </script>
+@endpush
