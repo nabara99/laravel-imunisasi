@@ -46,19 +46,19 @@ class VaccineStockExport
 
         // Title
         $sheet->setCellValue('A' . $currentRow, 'LAPORAN STOK VAKSIN');
-        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':L' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PUSKESMAS GIRI MULYA');
-        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':L' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow++;
 
         $sheet->setCellValue('A' . $currentRow, 'PERIODE ' . date('j F Y', strtotime($this->startDate)) . ' s.d ' . date('j F Y', strtotime($this->endDate)));
-        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
+        $sheet->mergeCells('A' . $currentRow . ':L' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $currentRow += 2;
@@ -71,12 +71,11 @@ class VaccineStockExport
         $sheet->setCellValue('E' . $currentRow, 'VVM');
         $sheet->setCellValue('F' . $currentRow, 'Expired');
         $sheet->setCellValue('G' . $currentRow, 'Harga (Rp)');
-        $sheet->setCellValue('H' . $currentRow, 'Saldo Awal');
+        $sheet->setCellValue('H' . $currentRow, 'Stok Awal');
         $sheet->setCellValue('I' . $currentRow, 'Periode');
         $sheet->mergeCells('I' . $currentRow . ':J' . $currentRow);
-        $sheet->setCellValue('K' . $currentRow, 'Saldo Akhir');
-        $sheet->setCellValue('L' . $currentRow, 'Stok Saat Ini');
-        $sheet->setCellValue('M' . $currentRow, 'Status');
+        $sheet->setCellValue('K' . $currentRow, 'Stok Saat Ini');
+        $sheet->setCellValue('L' . $currentRow, 'Status');
 
         // Merge cells for main headers
         $sheet->mergeCells('A' . $currentRow . ':A' . ($currentRow + 1));
@@ -89,7 +88,6 @@ class VaccineStockExport
         $sheet->mergeCells('H' . $currentRow . ':H' . ($currentRow + 1));
         $sheet->mergeCells('K' . $currentRow . ':K' . ($currentRow + 1));
         $sheet->mergeCells('L' . $currentRow . ':L' . ($currentRow + 1));
-        $sheet->mergeCells('M' . $currentRow . ':M' . ($currentRow + 1));
 
         $currentRow++;
 
@@ -97,7 +95,7 @@ class VaccineStockExport
         $sheet->setCellValue('I' . $currentRow, 'Masuk');
         $sheet->setCellValue('J' . $currentRow, 'Keluar');
 
-        $sheet->getStyle('A' . ($currentRow - 1) . ':M' . $currentRow)->applyFromArray($headerStyle);
+        $sheet->getStyle('A' . ($currentRow - 1) . ':L' . $currentRow)->applyFromArray($headerStyle);
         $currentRow++;
 
         $startDataRow = $currentRow;
@@ -120,9 +118,8 @@ class VaccineStockExport
             $sheet->setCellValue('H' . $currentRow, $vaccine->opening_stock);
             $sheet->setCellValue('I' . $currentRow, $vaccine->total_in);
             $sheet->setCellValue('J' . $currentRow, $vaccine->total_out);
-            $sheet->setCellValue('K' . $currentRow, $vaccine->closing_stock);
-            $sheet->setCellValue('L' . $currentRow, $vaccine->current_stock);
-            $sheet->setCellValue('M' . $currentRow, $vaccine->stock_status);
+            $sheet->setCellValue('K' . $currentRow, $vaccine->current_stock);
+            $sheet->setCellValue('L' . $currentRow, $vaccine->stock_status);
 
             // Align right for numeric columns
             $sheet->getStyle('G' . $currentRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
@@ -139,12 +136,11 @@ class VaccineStockExport
         $sheet->setCellValue('H' . $currentRow, $this->vaccines->sum('opening_stock'));
         $sheet->setCellValue('I' . $currentRow, $totalIn);
         $sheet->setCellValue('J' . $currentRow, $totalOut);
-        $sheet->setCellValue('K' . $currentRow, $this->vaccines->sum('closing_stock'));
-        $sheet->setCellValue('L' . $currentRow, $totalStock);
-        $sheet->setCellValue('M' . $currentRow, '');
+        $sheet->setCellValue('K' . $currentRow, $totalStock);
+        $sheet->setCellValue('L' . $currentRow, '');
 
-        $sheet->getStyle('A' . $currentRow . ':M' . $currentRow)->getFont()->setBold(true);
-        $sheet->getStyle('A' . $startDataRow . ':M' . $currentRow)->applyFromArray([
+        $sheet->getStyle('A' . $currentRow . ':L' . $currentRow)->getFont()->setBold(true);
+        $sheet->getStyle('A' . $startDataRow . ':L' . $currentRow)->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
         ]);
 
@@ -171,16 +167,14 @@ class VaccineStockExport
         $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
         $currentRow++;
 
-        $sheet->setCellValue('A' . $currentRow, 'Saldo Awal: ' . number_format($this->vaccines->sum('opening_stock')) . ' unit');
-        $currentRow++;
-        $sheet->setCellValue('A' . $currentRow, 'Saldo Akhir: ' . number_format($this->vaccines->sum('closing_stock')) . ' unit');
+        $sheet->setCellValue('A' . $currentRow, 'Stok Awal: ' . number_format($this->vaccines->sum('opening_stock')) . ' unit');
         $currentRow += 2;
-        $sheet->setCellValue('A' . $currentRow, 'Saldo awal mencakup penerimaan dan pengeluaran sebelum periode. Saldo akhir = saldo awal + masuk periode - keluar periode.');
-        $sheet->mergeCells('A' . $currentRow . ':M' . $currentRow);
+        $sheet->setCellValue('A' . $currentRow, 'Stok awal mencakup penerimaan dan pengeluaran sebelum periode. Stok saat ini = stok awal + masuk periode - keluar periode, sampai tanggal akhir periode.');
+        $sheet->mergeCells('A' . $currentRow . ':L' . $currentRow);
         $sheet->getStyle('A' . $currentRow)->getAlignment()->setWrapText(true);
 
         // Auto size columns
-        foreach (range('A', 'M') as $col) {
+        foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 

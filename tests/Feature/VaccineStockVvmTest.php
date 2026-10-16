@@ -88,5 +88,5 @@ it('uses the same receipt VVM source for the stock Excel export', function () {
         ->and($vaccines->first()->vvm)->toBe('B')
         ->and($vaccines->first()->total_in)->toBe(10)
         ->and($vaccines->first()->total_out)->toBe(0)
-        ->and($vaccines->first()->current_stock)->toBe(15);
+        ->and($vaccines->first()->current_stock)->toBe(10);
 });

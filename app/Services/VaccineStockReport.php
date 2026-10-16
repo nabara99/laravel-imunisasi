@@ -60,8 +60,8 @@ class VaccineStockReport
             $row->total_in = $batchReceipts->filter(fn ($receipt) => $receipt->date_in->toDateString() >= $startDate
                 && $receipt->date_in->toDateString() <= $endDate)->sum('stock');
             $row->total_out = $batchIssues->filter(fn ($issue) => $issue->date_out->toDateString() >= $startDate)->sum('quantity');
-            $row->closing_stock = $row->opening_stock + $row->total_in - $row->total_out;
-            $row->current_stock = $batchStocks->sum('stock');
+            // Report stock follows the transaction balance through the period end.
+            $row->current_stock = $row->opening_stock + $row->total_in - $row->total_out;
             $row->stock = $row->current_stock;
 
             return $row;

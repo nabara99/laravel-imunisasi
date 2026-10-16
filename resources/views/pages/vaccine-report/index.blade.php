@@ -1,5 +1,30 @@
 @extends('layouts.app')
 
+@push('style')
+    <link rel="stylesheet" href="{{ asset('vendors/select2/select2.min.css') }}">
+    <style>
+        .vaccine-report-form .select2-selection--single {
+            height: auto;
+            border-color: var(--bs-border-color);
+            border-radius: var(--bs-border-radius);
+        }
+
+        .vaccine-report-form .select2-selection__rendered {
+            padding: .469rem 2rem .469rem .8rem;
+            color: var(--bs-body-color);
+            line-height: 1.5;
+        }
+
+        .vaccine-report-form .select2-selection__arrow {
+            height: 100%;
+        }
+
+        .vaccine-report-form .select2-dropdown {
+            color: var(--bs-body-color);
+        }
+    </style>
+@endpush
+
 @section('main')
     <div class="main-content">
         <div class="page-content">
@@ -15,15 +40,15 @@
                     <div class="card bg-info">
                         <div class="card-header">Laporan Penerimaan Vaksin</div>
                         <div class="card-body">
-                            <form action="{{ route('vaccine-report.in') }}" method="POST" target="_blank" id="form-in">
+                            <form action="{{ route('vaccine-report.in') }}" method="POST" target="_blank" id="form-in" class="vaccine-report-form">
                                 @csrf
                                 <h5 class="card-title">
                                     Pilih tanggal dan vaksin
                                 </h5>
                                 <div class="card-text">
                                 <div class="mb-3">
-                                    <label>Vaksin (Opsional)</label>
-                                    <select name="id_vaccine" id="id_vaccine_in" class="form-control">
+                                    <label for="id_vaccine_in">Vaksin (Opsional)</label>
+                                    <select name="id_vaccine" id="id_vaccine_in" class="form-control vaccine-report-filter">
                                         <option value="">Semua Vaksin</option>
                                         @foreach ($vaccineIns as $vaccine)
                                             <option value="{{ $vaccine->id }}">
@@ -61,15 +86,15 @@
                     <div class="card bg-secondary">
                         <div class="card-header">Laporan Pengeluaran Vaksin</div>
                         <div class="card-body">
-                            <form action="{{ route('vaccine-report.out') }}" method="POST" target="_blank" id="form-out">
+                            <form action="{{ route('vaccine-report.out') }}" method="POST" target="_blank" id="form-out" class="vaccine-report-form">
                                 @csrf
                                 <h5 class="card-title">
                                     Pilih tanggal dan vaksin
                                 </h5>
                                 <div class="card-text">
                                 <div class="mb-3">
-                                    <label>Vaksin (Opsional)</label>
-                                    <select name="id_vaccine" id="id_vaccine_out" class="form-control">
+                                    <label for="id_vaccine_out">Vaksin (Opsional)</label>
+                                    <select name="id_vaccine" id="id_vaccine_out" class="form-control vaccine-report-filter">
                                         <option value="">Semua Vaksin</option>
                                         @foreach ($vaccines as $vaccine)
                                             <option value="{{ $vaccine->id }}">
@@ -107,15 +132,15 @@
                     <div class="card text-white bg-primary">
                         <div class="card-header">Laporan Stok Vaksin</div>
                         <div class="card-body">
-                            <form action="{{ route('vaccine-report.stock') }}" method="POST" target="_blank" id="form-stock">
+                            <form action="{{ route('vaccine-report.stock') }}" method="POST" target="_blank" id="form-stock" class="vaccine-report-form">
                                 @csrf
                                 <h5 class="card-title text-white">
                                     Pilih tanggal dan vaksin
                                 </h5>
                                 <div class="card-text">
                                 <div class="mb-3">
-                                    <label class="text-white">Vaksin (Opsional)</label>
-                                    <select name="id_vaccine" id="id_vaccine_stock" class="form-control">
+                                    <label for="id_vaccine_stock" class="text-white">Vaksin (Opsional)</label>
+                                    <select name="id_vaccine" id="id_vaccine_stock" class="form-control vaccine-report-filter">
                                         <option value="">Semua Vaksin</option>
                                         @foreach ($vaccines as $vaccine)
                                             <option value="{{ $vaccine->id }}">
@@ -154,6 +179,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 <script>
     document.querySelectorAll('#form-in, #form-out, #form-stock').forEach(function(form) {
         const startDate = form.querySelector('[name="start_date"]');
@@ -174,6 +200,31 @@
         endDate.addEventListener('change', validateDateRange);
         window.addEventListener('pageshow', validateDateRange);
         validateDateRange();
+    });
+
+    $(function() {
+        $('.vaccine-report-filter').each(function() {
+            const form = $(this).closest('form');
+
+            $(this).select2({
+                dropdownParent: form,
+                width: '100%',
+                placeholder: 'Semua Vaksin',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                language: {
+                    noResults: function() {
+                        return 'Vaksin tidak ditemukan';
+                    }
+                }
+            }).on('select2:open', function() {
+                const searchField = form.find('.select2-search__field')
+                    .attr('placeholder', 'Cari nama vaksin atau nomor batch')
+                    .attr('aria-label', 'Cari nama vaksin atau nomor batch');
+
+                searchField.get(0)?.focus();
+            });
+        });
     });
 </script>
 @endpush
